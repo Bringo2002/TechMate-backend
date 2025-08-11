@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int              @id @default(autoincrement())
+  email        String           @unique
+  password     String?
+  name         String
+  role         Role             @default(CLIENT)
+  createdAt    DateTime         @default(now())
+  attachments  Attachment[]
+  listings     Listing[]
+  messagesSent Message[]        @relation("UserMessages")
+  profile      Profile?
+  projects     Project[]        @relation("ProviderProjects")
+  requests     ServiceRequest[] @relation("ClientRequests")
+}
+
+model Profile {
+  id     Int      @id @default(autoincrement())
+  userId Int      @unique
+  bio    String?
+  skills String[]
+  rating Float?   @default(0)
+  user   User     @relation(fields: [userId], references: [id])
+}
+
+model Listing {
+  id          Int      @id @default(autoincrement())
+  providerId  Int
+  title       String
+  description String
+  priceMin    Int
+  priceMax    Int
+  tags        String[]
+  createdAt   DateTime @default(now())
+  provider    User     @relation(fields: [providerId], references: [id])
+}
+
+model ServiceRequest {
+  id          Int           @id @default(autoincrement())
+  clientId    Int
+  category    String
+  description String
+  budget      Int?
+  status      RequestStatus @default(OPEN)
+  createdAt   DateTime      @default(now())
+  projects    Project[]
+  client      User          @relation("ClientRequests", fields: [clientId], references: [id])
+}
+
+model Project {
+  id         Int             @id @default(autoincrement())
+  requestId  Int?
+  providerId Int?
+  status     ProjectStatus   @default(PENDING)
+  milestones Json?
+  createdAt  DateTime        @default(now())
+  messages   Message[]
+  order      Order?
+  provider   User?           @relation("ProviderProjects", fields: [providerId], references: [id])
+  request    ServiceRequest? @relation(fields: [requestId], references: [id])
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  projectId       Int         @unique
+  amount          Int
+  currency        String      @default("USD")
+  status          OrderStatus @default(PENDING)
+  paymentIntentId String?
+  createdAt       DateTime    @default(now())
+  project         Project     @relation(fields: [projectId], references: [id])
+}
+
+model Message {
+  id        Int       @id @default(autoincrement())
+  projectId Int
+  senderId  Int
+  body      String
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  project   Project   @relation(fields: [projectId], references: [id])
+  sender    User      @relation("UserMessages", fields: [senderId], references: [id])
+}
+
+model Attachment {
+  id           Int      @id @default(autoincrement())
+  url          String
+  type         String
+  size         Int?
+  uploadedById Int
+  createdAt    DateTime @default(now())
+  uploadedBy   User     @relation(fields: [uploadedById], references: [id])
+}
+
+enum Role {
+  CLIENT
+  PROVIDER
+  ADMIN
+}
+
+enum RequestStatus {
+  OPEN
+  ASSIGNED
+  CLOSED
+}
+
+enum ProjectStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  REFUNDED
+  CANCELLED
+}
