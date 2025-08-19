@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "noEmit": false,
+    "sourceMap": false,          // don't emit source maps in prod (unless you want them for debugging)
+    "removeComments": true       // strips comments to keep build clean
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "jest.config.ts",
+    "prisma/**/*.ts",            // ✅ keeps seed/config scripts out of build
+    "node_modules",
+    "dist"
+  ]
+}

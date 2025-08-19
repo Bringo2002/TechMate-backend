@@ -1,3 +1,5 @@
+// prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,120 +10,100 @@ datasource db {
 }
 
 model User {
-  id           Int              @id @default(autoincrement())
-  email        String           @unique
-  password     String?
-  name         String
-  role         Role             @default(CLIENT)
-  createdAt    DateTime         @default(now())
-  attachments  Attachment[]
-  listings     Listing[]
-  messagesSent Message[]        @relation("UserMessages")
-  profile      Profile?
-  projects     Project[]        @relation("ProviderProjects")
-  requests     ServiceRequest[] @relation("ClientRequests")
-}
+  id                String     @id @default(uuid())
+  name              String
+  email             String     @unique
+  password          String
 
-model Profile {
-  id     Int      @id @default(autoincrement())
-  userId Int      @unique
-  bio    String?
-  skills String[]
-  rating Float?   @default(0)
-  user   User     @relation(fields: [userId], references: [id])
-}
+  // Relations
+  messagesSent      Message[]  @relation("MessagesSent")
+  messagesReceived  Message[]  @relation("MessagesReceived")
+  posts             Post[]
+  comments          Comment[]
+  services          Service[]
+  bookings          Booking[]
+  reviews           Review[]
 
-model Listing {
-  id          Int      @id @default(autoincrement())
-  providerId  Int
-  title       String
-  description String
-  priceMin    Int
-  priceMax    Int
-  tags        String[]
-  createdAt   DateTime @default(now())
-  provider    User     @relation(fields: [providerId], references: [id])
-}
-
-model ServiceRequest {
-  id          Int           @id @default(autoincrement())
-  clientId    Int
-  category    String
-  description String
-  budget      Int?
-  status      RequestStatus @default(OPEN)
-  createdAt   DateTime      @default(now())
-  projects    Project[]
-  client      User          @relation("ClientRequests", fields: [clientId], references: [id])
-}
-
-model Project {
-  id         Int             @id @default(autoincrement())
-  requestId  Int?
-  providerId Int?
-  status     ProjectStatus   @default(PENDING)
-  milestones Json?
-  createdAt  DateTime        @default(now())
-  messages   Message[]
-  order      Order?
-  provider   User?           @relation("ProviderProjects", fields: [providerId], references: [id])
-  request    ServiceRequest? @relation(fields: [requestId], references: [id])
-}
-
-model Order {
-  id              Int         @id @default(autoincrement())
-  projectId       Int         @unique
-  amount          Int
-  currency        String      @default("USD")
-  status          OrderStatus @default(PENDING)
-  paymentIntentId String?
-  createdAt       DateTime    @default(now())
-  project         Project     @relation(fields: [projectId], references: [id])
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 }
 
 model Message {
-  id        Int       @id @default(autoincrement())
-  projectId Int
-  senderId  Int
-  body      String
-  readAt    DateTime?
-  createdAt DateTime  @default(now())
-  project   Project   @relation(fields: [projectId], references: [id])
-  sender    User      @relation("UserMessages", fields: [senderId], references: [id])
+  id         String   @id @default(uuid())
+  content    String
+  senderId   String
+  receiverId String
+
+  sender     User     @relation("MessagesSent", fields: [senderId], references: [id])
+  receiver   User     @relation("MessagesReceived", fields: [receiverId], references: [id])
+
+  createdAt  DateTime @default(now())
 }
 
-model Attachment {
-  id           Int      @id @default(autoincrement())
-  url          String
-  type         String
-  size         Int?
-  uploadedById Int
-  createdAt    DateTime @default(now())
-  uploadedBy   User     @relation(fields: [uploadedById], references: [id])
+model Post {
+  id         String    @id @default(uuid())
+  title      String
+  content    String
+  authorId   String
+  author     User      @relation(fields: [authorId], references: [id])
+  comments   Comment[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
-enum Role {
-  CLIENT
-  PROVIDER
-  ADMIN
+model Comment {
+  id         String    @id @default(uuid())
+  content    String
+  postId     String
+  authorId   String
+  post       Post      @relation(fields: [postId], references: [id])
+  author     User      @relation(fields: [authorId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
-enum RequestStatus {
-  OPEN
-  ASSIGNED
-  CLOSED
+model Service {
+  id         String     @id @default(uuid())
+  name       String
+  price      Float
+  providerId String
+  provider   User       @relation(fields: [providerId], references: [id])
+  bookings   Booking[]
+  reviews    Review[]
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
 
-enum ProjectStatus {
+enum BookingStatus {
   PENDING
-  IN_PROGRESS
-  COMPLETED
+  CONFIRMED
   CANCELLED
 }
 
-enum OrderStatus {
-  PENDING
-  PAID
-  REFUNDED
-  CANCELLED
+model Booking {
+  id         String        @id @default(uuid())
+  serviceId  String
+  userId     String
+  date       DateTime
+  status     BookingStatus @default(PENDING)
+
+  service    Service       @relation(fields: [serviceId], references: [id])
+  user       User          @relation(fields: [userId], references: [id])
+
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Review {
+  id         String     @id @default(uuid())
+  serviceId  String
+  userId     String
+  rating     Int
+  comment    String?    // made optional
+  service    Service    @relation(fields: [serviceId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }

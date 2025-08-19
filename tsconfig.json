@@ -3,11 +3,12 @@
     "module": "ESNext",
     "target": "ESNext",
     "moduleResolution": "Node",
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
-  }
+  },
+  "include": ["src/**/*.ts", "prisma/**/*.ts"]
 }
