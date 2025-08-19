@@ -1,5 +1,6 @@
 // prisma/seed.ts
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -15,12 +16,28 @@ async function main() {
   await prisma.service.deleteMany();
   await prisma.user.deleteMany();
 
+  // Pre-hash passwords
+  const adminPass = await bcrypt.hash('admin123', 10);
+  const alicePass = await bcrypt.hash('user123', 10);
+  const bobPass   = await bcrypt.hash('user123', 10);
+
+  // Admin
+  const admin = await prisma.user.create({
+    data: {
+      name: 'Super Admin',
+      email: 'admin@techmate.com',
+      password: adminPass,
+      role: 'ADMIN',
+    },
+  });
+
   // Users
   const alice = await prisma.user.create({
     data: {
       name: 'Alice Johnson',
       email: 'alice@example.com',
-      password: 'hashed_password_1', // hash in prod
+      password: alicePass,
+      role: 'USER',
     },
   });
 
@@ -28,11 +45,12 @@ async function main() {
     data: {
       name: 'Bob Smith',
       email: 'bob@example.com',
-      password: 'hashed_password_2',
+      password: bobPass,
+      role: 'USER',
     },
   });
 
-  // Services (match schema: name, price, provider)
+  // Services
   const webDev = await prisma.service.create({
     data: {
       name: 'Web Development',
@@ -49,7 +67,7 @@ async function main() {
     },
   });
 
-  // Post (uses author/authorId)
+  // Post
   const post = await prisma.post.create({
     data: {
       title: 'Why You Need a Professional Website',
@@ -58,7 +76,7 @@ async function main() {
     },
   });
 
-  // Comment on the post
+  // Comment
   await prisma.comment.create({
     data: {
       content: 'Totally agree — it’s a trust signal.',
@@ -67,16 +85,16 @@ async function main() {
     },
   });
 
-  // Booking (no status in your schema; just date + relations)
+  // Booking
   await prisma.booking.create({
     data: {
-      date: new Date(), // or a specific date
+      date: new Date(),
       service: { connect: { id: webDev.id } },
       user: { connect: { id: bob.id } },
     },
   });
 
-  // Review (comment is required in your schema)
+  // Review
   await prisma.review.create({
     data: {
       rating: 5,
@@ -102,7 +120,7 @@ async function main() {
     ],
   });
 
-  console.log('✅ Database seed completed!');
+  console.log('✅ Database seed completed with Admin + Users + Demo data!');
 }
 
 main()
@@ -113,3 +131,4 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
