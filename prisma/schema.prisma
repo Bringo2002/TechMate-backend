@@ -33,6 +33,8 @@ model User {
   services          Service[]
   bookings          Booking[]
   reviews           Review[]
+  serviceRequests   ServiceRequest[] 
+
 
 }
 
@@ -78,6 +80,8 @@ model Service {
   provider   User       @relation(fields: [providerId], references: [id])
   bookings   Booking[]
   reviews    Review[]
+  serviceRequests  ServiceRequest[]
+
 
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
@@ -115,3 +119,26 @@ model Review {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 }
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model ServiceRequest {
+  id          String        @id @default(uuid())
+  userId      String
+  serviceId   String
+  message     String?
+  status      RequestStatus @default(PENDING)
+
+  user        User          @relation(fields: [userId], references: [id])
+  service     Service       @relation(fields: [serviceId], references: [id])
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  @@index([userId])
+  @@index([serviceId])
+}
+
