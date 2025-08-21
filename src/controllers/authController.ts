@@ -3,6 +3,9 @@ import bcrypt from "bcrypt";
 import prisma from "../prismaClient";
 import generateToken from "../utils/generateToken";
 import jwt from "jsonwebtoken";
+import { sendNotification } from "../services/notificationService";;
+import { createSession } from "../services/sessionService";
+
 
 export const register = async (req: Request, res: Response): Promise<Response | void> => {
   try {
@@ -35,10 +38,10 @@ export const register = async (req: Request, res: Response): Promise<Response | 
 export const login = async (req: Request, res: Response): Promise<Response | void> => {
   try {
     const { email, password } = req.body;
-const ip = req.ip || req.socket.remoteAddress || "unknown";
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
 
-    // IP-based rate limiting here 
-    const MAX_IP_ATTEMPTS = 10; // Max failed attempts per IP
+    // IP-based rate limiting
+    const MAX_IP_ATTEMPTS = 10; 
     const IP_WINDOW_MINUTES = 15;
 
     const ipCutoff = new Date(Date.now() - IP_WINDOW_MINUTES * 60 * 1000);
@@ -51,21 +54,27 @@ const ip = req.ip || req.socket.remoteAddress || "unknown";
     });
 
     if (recentIpAttempts >= MAX_IP_ATTEMPTS) {
+      // 🚨 notify about suspicious IP
+      await sendNotification(
+        null,
+        "LOGIN_ALERT",
+        `IP ${ip} temporarily blocked due to too many failed login attempts.`
+      );
+
       return res.status(429).json({
         message: `Too many login attempts from this IP. Try again in ${IP_WINDOW_MINUTES} minutes.`,
       });
     }
-    // End IP-based rate limiting 
 
     // fetch user
     const user = await prisma.user.findUnique({
       where: { email },
-      include: { loginAttempts: { orderBy: { createdAt: 'desc' }, take: 5 } } // get last 5 attempts
+      include: { loginAttempts: { orderBy: { createdAt: 'desc' }, take: 5 } }
     });
 
     if (!user) {
       await prisma.loginAttempt.create({
-        data: { email, ip: req.ip || "unknown", success: false }
+        data: { email, ip, success: false }
       });
       return res.status(400).json({ message: "Invalid credentials" });
     }
@@ -74,19 +83,43 @@ const ip = req.ip || req.socket.remoteAddress || "unknown";
     const failedAttempts = user.loginAttempts.filter(a => !a.success);
     const lastFailed = failedAttempts[0];
 
-    if (failedAttempts.length >= 5 && lastFailed && Date.now() - new Date(lastFailed.createdAt).getTime() < 15 * 60 * 1000) {
+    if (
+      failedAttempts.length >= 5 && 
+      lastFailed && 
+      Date.now() - new Date(lastFailed.createdAt).getTime() < 15 * 60 * 1000
+    ) {
+      // 🚨 notify about locked account
+      await sendNotification(
+        user.id,
+        "LOGIN_ALERT",
+        `Account locked due to too many failed attempts.`
+      );
+
       return res.status(429).json({ message: "Account temporarily locked. Try again in 15 minutes." });
     }
 
+    // validate password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     await prisma.loginAttempt.create({
-      data: { userId: user.id, ip: req.ip || "unknown", success: isPasswordValid }
+      data: { userId: user.id, ip, success: isPasswordValid }
     });
 
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
+
+    // Create a new session after successful login
+    const session = await createSession(user.id, req.ip, req.headers["user-agent"] || "unknown");
+    
+
+    // ✅ success (optional: later add geo check here)
+    // await sendNotification({
+    //   userId: user.id,
+    //   email: user.email,
+    //   type: "LOGIN_ALERT",
+    //   message: `Successful login from new location: ${ip}.`
+    // });
 
     return res.json({
       id: user.id,
@@ -100,7 +133,6 @@ const ip = req.ip || req.socket.remoteAddress || "unknown";
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 export const refresh = async (req: Request, res: Response): Promise<Response | void> => {
   const { token } = req.body;
   if (!token) return res.status(401).json({ message: "No token provided" });

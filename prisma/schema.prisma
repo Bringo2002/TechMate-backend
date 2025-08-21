@@ -36,6 +36,9 @@ model User {
   serviceRequests   ServiceRequest[] 
   loginAttempts     LoginAttempt[]
 
+  notifications Notification[]
+  sessions      Session[]  
+
 
 }
 
@@ -152,6 +155,40 @@ model LoginAttempt {
   createdAt DateTime @default(now())
 
   user      User?    @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String?
+  type      String   // "FAILED_LOGIN", "ACCOUNT_LOCK", etc.
+  message   String
+  channel   NotificationChannel @default(IN_APP)
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
+
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expiresAt DateTime
+  valid     Boolean  @default(true)
+  revoked   Boolean  @default(false)
+  token     String
+
+  user      User @relation(fields: [userId], references: [id])
+  @@index([userId])
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  TELEGRAM
 }
 
 
