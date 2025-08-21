@@ -30,6 +30,10 @@ app.use('/api/messages', messageRoute);
 // Profile routes
 app.use('/api/profile', profileRoutes);
 
+// Static file serving for uploads
+app.use("/uploads", express.static("uploads"));
+
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
