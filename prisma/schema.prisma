@@ -23,6 +23,7 @@ model User {
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
   role              Role       @default(USER)
+  emailVerified       Boolean                @default(false)
 
 
   // Relations
@@ -36,8 +37,11 @@ model User {
   serviceRequests   ServiceRequest[] 
   loginAttempts     LoginAttempt[]
 
-  notifications Notification[]
-  sessions      Session[]  
+  notifications     Notification[]
+  sessions          Session[]  
+
+  verificationTokens  VerificationToken[]
+  passwordResetTokens PasswordResetToken[]
 
 
 }
@@ -48,10 +52,14 @@ model Message {
   senderId   String
   receiverId String
 
-  sender     User     @relation("MessagesSent", fields: [senderId], references: [id])
-  receiver   User     @relation("MessagesReceived", fields: [receiverId], references: [id])
+  sender     User     @relation("MessagesSent", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User     @relation("MessagesReceived", fields: [receiverId], references: [id], onDelete: Cascade)
 
   createdAt  DateTime @default(now())
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([senderId, receiverId])
 }
 
 model Post {
@@ -155,6 +163,8 @@ model LoginAttempt {
   createdAt DateTime @default(now())
 
   user      User?    @relation(fields: [userId], references: [id])
+  @@index([userId])
+  @@index([email])
 }
 
 model Notification {
@@ -167,6 +177,7 @@ model Notification {
   read      Boolean  @default(false)
 
   user      User?    @relation(fields: [userId], references: [id])
+  @@index([userId])
 }
 
 model Session {
@@ -179,7 +190,7 @@ model Session {
   expiresAt DateTime
   valid     Boolean  @default(true)
   revoked   Boolean  @default(false)
-  token     String
+  token     String   @unique
 
   user      User @relation(fields: [userId], references: [id])
   @@index([userId])
@@ -190,5 +201,24 @@ enum NotificationChannel {
   EMAIL
   TELEGRAM
 }
+
+model VerificationToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
 
 
