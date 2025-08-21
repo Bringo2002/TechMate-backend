@@ -35,12 +35,58 @@ export const register = async (req: Request, res: Response): Promise<Response | 
 export const login = async (req: Request, res: Response): Promise<Response | void> => {
   try {
     const { email, password } = req.body;
+const ip = req.ip || req.socket.remoteAddress || "unknown";
 
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    // IP-based rate limiting here 
+    const MAX_IP_ATTEMPTS = 10; // Max failed attempts per IP
+    const IP_WINDOW_MINUTES = 15;
+
+    const ipCutoff = new Date(Date.now() - IP_WINDOW_MINUTES * 60 * 1000);
+    const recentIpAttempts = await prisma.loginAttempt.count({
+      where: {
+        ip,
+        success: false,
+        createdAt: { gte: ipCutoff },
+      },
+    });
+
+    if (recentIpAttempts >= MAX_IP_ATTEMPTS) {
+      return res.status(429).json({
+        message: `Too many login attempts from this IP. Try again in ${IP_WINDOW_MINUTES} minutes.`,
+      });
+    }
+    // End IP-based rate limiting 
+
+    // fetch user
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: { loginAttempts: { orderBy: { createdAt: 'desc' }, take: 5 } } // get last 5 attempts
+    });
+
+    if (!user) {
+      await prisma.loginAttempt.create({
+        data: { email, ip: req.ip || "unknown", success: false }
+      });
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Check if account is locked due to too many failed attempts
+    const failedAttempts = user.loginAttempts.filter(a => !a.success);
+    const lastFailed = failedAttempts[0];
+
+    if (failedAttempts.length >= 5 && lastFailed && Date.now() - new Date(lastFailed.createdAt).getTime() < 15 * 60 * 1000) {
+      return res.status(429).json({ message: "Account temporarily locked. Try again in 15 minutes." });
+    }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) return res.status(400).json({ message: "Invalid credentials" });
+
+    await prisma.loginAttempt.create({
+      data: { userId: user.id, ip: req.ip || "unknown", success: isPasswordValid }
+    });
+
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
     return res.json({
       id: user.id,
@@ -66,5 +112,6 @@ export const refresh = async (req: Request, res: Response): Promise<Response | v
     return res.status(401).json({ message: "Invalid token" });
   }
 };
+
 
 export default { register, login, refresh };
