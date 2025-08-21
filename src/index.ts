@@ -4,6 +4,7 @@ import requestRoutes from './routes/requestRoutes';
 import authRoutes from "./routes/authRoutes";
 import generalLimiter from "./middleware/rateLimiter";
 import messageRoute from './routes/messageRoutes';
+import profileRoutes from './routes/profileRoutes';
 
 
 const app = express();
@@ -19,9 +20,15 @@ app.use(generalLimiter);
 // Auth routes
 app.use('/api/auth', authRoutes);
 
+
+// Request routes
 app.use('/api/requests', requestRoutes);
 
+// Message routes
 app.use('/api/messages', messageRoute);
+
+// Profile routes
+app.use('/api/profile', profileRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
