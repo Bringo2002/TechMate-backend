@@ -14,50 +14,47 @@ enum Role {
   ADMIN
 }
 
-
 model User {
-  id                String     @id @default(uuid())
-  name              String
-  email             String     @unique
-  password          String
-  avatarUrl         String?    
-  bio               String?    
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-  role              Role       @default(USER)
-  emailVerified       Boolean                @default(false)
-
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  password      String
+  avatarUrl     String?
+  bio           String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  role          Role     @default(USER)
+  emailVerified Boolean  @default(false)
 
   // Relations
-  messagesSent      Message[]  @relation("MessagesSent")
-  messagesReceived  Message[]  @relation("MessagesReceived")
-  posts             Post[]
-  comments          Comment[]
-  services          Service[]
-  bookings          Booking[]
-  reviews           Review[]
-  serviceRequests   ServiceRequest[] 
-  loginAttempts     LoginAttempt[]
+  messagesSent     Message[]        @relation("MessagesSent")
+  messagesReceived Message[]        @relation("MessagesReceived")
+  posts            Post[]
+  comments         Comment[]
+  services         Service[]
+  bookings         Booking[]
+  reviews          Review[]
+  serviceRequests  ServiceRequest[]
+  loginAttempts    LoginAttempt[]
 
-  notifications     Notification[]
-  sessions          Session[]  
+  notifications Notification[]
+  sessions      Session[]
+  payments      Payment[]      @relation("UserPayments")
 
   verificationTokens  VerificationToken[]
   passwordResetTokens PasswordResetToken[]
-
-
 }
 
 model Message {
-  id         String   @id @default(uuid())
+  id         String @id @default(uuid())
   content    String
   senderId   String
   receiverId String
 
-  sender     User     @relation("MessagesSent", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver   User     @relation("MessagesReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+  sender   User @relation("MessagesSent", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("MessagesReceived", fields: [receiverId], references: [id], onDelete: Cascade)
 
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@index([senderId])
   @@index([receiverId])
@@ -65,40 +62,41 @@ model Message {
 }
 
 model Post {
-  id         String    @id @default(uuid())
-  title      String
-  content    String
-  authorId   String
-  author     User      @relation(fields: [authorId], references: [id])
-  comments   Comment[]
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id        String    @id @default(uuid())
+  title     String
+  content   String
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [id])
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Comment {
-  id         String    @id @default(uuid())
-  content    String
-  postId     String
-  authorId   String
-  post       Post      @relation(fields: [postId], references: [id])
-  author     User      @relation(fields: [authorId], references: [id])
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id        String   @id @default(uuid())
+  content   String
+  postId    String
+  authorId  String
+  post      Post     @relation(fields: [postId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Service {
-  id         String     @id @default(uuid())
-  name       String
-  price      Float
-  providerId String
-  provider   User       @relation(fields: [providerId], references: [id])
-  bookings   Booking[]
-  reviews    Review[]
-  serviceRequests  ServiceRequest[]
+  id              String           @id @default(uuid())
+  name            String
+  price           Float
+  providerId      String
+  provider        User             @relation(fields: [providerId], references: [id])
+  bookings        Booking[]
+  reviews         Review[]
+  serviceRequests ServiceRequest[]
+  payments        Payment[]        @relation("ServicePayments")
 
-
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? // soft delete
 }
 
 enum BookingStatus {
@@ -108,50 +106,58 @@ enum BookingStatus {
 }
 
 model Booking {
-  id         String        @id @default(uuid())
-  serviceId  String
-  userId     String
-  date       DateTime
-  status     BookingStatus @default(PENDING)
+  id        String        @id @default(uuid())
+  serviceId String
+  userId    String
+  date      DateTime
+  status    BookingStatus @default(PENDING)
 
-  service    Service       @relation(fields: [serviceId], references: [id])
-  user       User          @relation(fields: [userId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? // soft delete
+
+  payments Payment[] @relation("BookingPayments")
 }
 
 model Review {
-  id         String     @id @default(uuid())
-  serviceId  String
-  userId     String
-  rating     Int
-  comment    String?    // made optional
-  service    Service    @relation(fields: [serviceId], references: [id])
-  user       User       @relation(fields: [userId], references: [id])
+  id        String  @id @default(uuid())
+  serviceId String
+  userId    String
+  rating    Int
+  comment   String? // made optional
+  service   Service @relation(fields: [serviceId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
 
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum RequestStatus {
   PENDING
   APPROVED
   REJECTED
+  COMPLETED
+  CANCELLED
+  IN_PROGRESS
 }
 
 model ServiceRequest {
-  id          String        @id @default(uuid())
-  userId      String
-  serviceId   String
-  message     String?
-  status      RequestStatus @default(PENDING)
+  id        String        @id @default(uuid())
+  userId    String
+  serviceId String
+  message   String?
+  status    RequestStatus @default(PENDING)
 
-  user        User          @relation(fields: [userId], references: [id])
-  service     Service       @relation(fields: [serviceId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? // soft delete 
+
   @@index([userId])
   @@index([serviceId])
 }
@@ -164,21 +170,23 @@ model LoginAttempt {
   success   Boolean
   createdAt DateTime @default(now())
 
-  user      User?    @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
+
   @@index([userId])
   @@index([email])
 }
 
 model Notification {
-  id        String   @id @default(uuid())
+  id        String              @id @default(uuid())
   userId    String?
-  type      String   // "FAILED_LOGIN", "ACCOUNT_LOCK", etc.
+  type      String // "FAILED_LOGIN", "ACCOUNT_LOCK", etc.
   message   String
   channel   NotificationChannel @default(IN_APP)
-  createdAt DateTime @default(now())
-  read      Boolean  @default(false)
+  createdAt DateTime            @default(now())
+  read      Boolean             @default(false)
 
-  user      User?    @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
+
   @@index([userId])
 }
 
@@ -194,7 +202,8 @@ model Session {
   revoked   Boolean  @default(false)
   token     String   @unique
 
-  user      User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
   @@index([userId])
 }
 
@@ -222,5 +231,42 @@ model PasswordResetToken {
   createdAt DateTime @default(now())
 }
 
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
 
+enum PaymentMethod {
+  CARD
+  PAYPAL
+  BANK_TRANSFER
+  WALLET
+}
 
+model Payment {
+  id          String        @id @default(uuid())
+  userId      String
+  serviceId   String? // optional: payment may be linked to a Service
+  bookingId   String? // optional: payment may be linked to a Booking
+  amount      Float // store in major units (e.g., dollars)
+  method      PaymentMethod
+  status      PaymentStatus @default(PENDING)
+  transaction String?       @unique // optional: external payment provider transaction ID
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt DateTime? // soft delete
+
+  // Relations
+  user    User     @relation(fields: [userId], references: [id], name: "UserPayments")
+  service Service? @relation(fields: [serviceId], references: [id], name: "ServicePayments")
+  booking Booking? @relation(fields: [bookingId], references: [id], name: "BookingPayments")
+
+  @@unique([bookingId, transaction])
+  @@index([userId])
+  @@index([serviceId])
+  @@index([bookingId])
+  @@index([status])
+  @@index([createdAt])
+}

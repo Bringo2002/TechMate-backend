@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes";
 import generalLimiter from "./middleware/rateLimiter";
 import messageRoute from './routes/messageRoutes';
 import profileRoutes from './routes/profileRoutes';
+import dashboardRoutes from "./routes/dashboardRoutes"
 
 
 const app = express();
@@ -32,6 +33,9 @@ app.use('/api/profile', profileRoutes);
 
 // Static file serving for uploads
 app.use("/uploads", express.static("uploads"));
+
+// Dashboard routes
+app.use("/api/dashboard", dashboardRoutes);
 
 
 app.listen(PORT, () => {
