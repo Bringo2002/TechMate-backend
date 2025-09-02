@@ -3,43 +3,57 @@ import jwt from "jsonwebtoken";
 import prisma from "../prismaClient";
 import { validateSession } from "../services/sessionService";
 
+interface DecodedToken {
+  id: string;
+  jti: string;
+}
+
 const protect = async (
   req: Request & { user?: any; session?: any },
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const authHeader = req.headers.authorization;
+  try {
+    // 🔑 Get token from either Bearer header OR HttpOnly cookie
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith("Bearer ")
+      ? authHeader.split(" ")[1]
+      : req.cookies?.token; // requires cookie-parser middleware
 
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    const token = authHeader.split(" ")[1];
-
-    try {
-      // 🔑 Decode JWT
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string; jti: string };
-
-      // 🔒 Validate session against DB
-      const session = await validateSession(decoded.jti);
-      if (!session) {
-        res.status(401).json({ message: "Session expired or revoked" });
-        return;
-      }
-
-      // 👤 Attach user
-      const user = await prisma.user.findUnique({ where: { id: decoded.id } });
-      if (!user) {
-        res.status(401).json({ message: "Not authorized" });
-        return;
-      }
-
-      req.user = user;
-      req.session = session; // store session for later use
-      next();
-    } catch (err) {
-      console.error("Auth error:", err);
-      res.status(401).json({ message: "Token failed" });
+    if (!token) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
     }
-  } else {
-    res.status(401).json({ message: "No token, authorization denied" });
+
+    // 🧾 Verify and decode JWT
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as DecodedToken;
+
+    // 🔒 Validate session in DB
+    const session = await validateSession(decoded.jti);
+    if (!session) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
+    // 👤 Fetch user (optimize if session has userId)
+    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+    if (!user) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
+    // ✅ Attach to req
+    req.user = user;
+    req.session = session;
+
+    return next();
+  } catch (err: any) {
+    if (err.name === "TokenExpiredError") {
+      res.status(401).json({ message: "Token expired" });
+      return;
+    }
+    console.error("Auth error:", err);
+    res.status(401).json({ message: "Unauthorized" });
   }
 };
 
