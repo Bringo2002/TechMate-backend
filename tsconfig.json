@@ -3,7 +3,7 @@
     "module": "ESNext",
     "target": "ESNext",
     "moduleResolution": "Node",
-    "rootDir": ".",
+  "rootDir": "src",
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
