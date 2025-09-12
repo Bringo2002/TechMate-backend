@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
+     "rootDir": "src", 
     "noEmit": false,
     "sourceMap": false,          // don't emit source maps in prod (unless you want them for debugging)
     "removeComments": true       // strips comments to keep build clean
