@@ -11,7 +11,7 @@
     "test": "jest",
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.build.json",
-    "start": "node dist/src/index.js",
+    "start": "node dist/index.js",
     "seed": "tsx prisma/seed.ts",
     "postinstall": "prisma generate",
     "lint": "eslint . --ext .ts"
