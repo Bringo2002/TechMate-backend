@@ -2,17 +2,24 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-     "rootDir": "src", 
+    "rootDir": "src",
     "noEmit": false,
-    "sourceMap": false,          // don't emit source maps in prod (unless you want them for debugging)
-    "removeComments": true       // strips comments to keep build clean
+    "sourceMap": false,
+    "removeComments": true,
+    "module": "NodeNext",           // ✅ matches Node's native ESM
+    "moduleResolution": "NodeNext", // ✅ required for .js extension rewriting
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts"],
   "exclude": [
     "**/*.test.ts",
     "**/*.spec.ts",
     "jest.config.ts",
-    "prisma/**/*.ts",            // ✅ keeps seed/config scripts out of build
+    "prisma/**/*.ts",
     "node_modules",
     "dist"
   ]
