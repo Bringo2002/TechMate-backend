@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-// import requestRoutes from './routes/requestRoutes.js';
+import requestRoutes from './routes/requestRoutes.js';
 import authRoutes from "./routes/authRoutes";
 import generalLimiter from "./middleware/rateLimiter";
 import messageRoute from './routes/messageRoutes';
@@ -23,7 +23,7 @@ app.use('/api/auth', authRoutes);
 
 
 // Request routes
-// app.use('/api/requests', requestRoutes);
+app.use('/api/requests', requestRoutes);
 
 // Message routes
 app.use('/api/messages', messageRoute);
