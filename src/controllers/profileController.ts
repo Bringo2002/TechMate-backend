@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getUserProfile, updateUserProfile } from "../services/profileService";
 import { z } from "zod";
-import prisma from "../prismaClient";
+import prisma from "../prismaClient.js";
 
 /**
  * -------------------------------

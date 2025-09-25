@@ -1,18 +1,27 @@
 {
   "compilerOptions": {
-    "module": "node16",
-    "target":"es2016",
-    "moduleResolution": "Node",
-  "rootDir": ".",
+    // ✅ Use CommonJS for stability (avoids .js extension headaches)
+    "module": "commonjs",
+    "target": "es2016",
+    "moduleResolution": "node",
+
+    // ✅ Project structure
+    "rootDir": ".",
     "outDir": "./dist",
+
+    // ✅ Strictness + compatibility
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
+
+    // ✅ Path aliases for clean imports
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"]
     }
   },
+
+  // ✅ Include your source + prisma client
   "include": ["src/**/*.ts", "prisma/**/*.ts"]
 }

@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import requestRoutes from './routes/requestRoutes.js';
 import authRoutes from "./routes/authRoutes";
-import generalLimiter from "./middleware/rateLimiter";
+import generalLimiter from "./middleware/rateLimiter.js";
 import messageRoute from './routes/messageRoutes';
 import profileRoutes from './routes/profileRoutes';
 import dashboardRoutes from "./routes/dashboardRoutes"

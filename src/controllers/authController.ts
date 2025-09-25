@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import prisma from "../prismaClient";
+import prisma from "../prismaClient.js";
 import generateToken from "../utils/generateToken";
 import jwt from "jsonwebtoken";
 import { sendNotification } from "../services/notificationService";;
