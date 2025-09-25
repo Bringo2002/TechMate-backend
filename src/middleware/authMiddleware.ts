@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import prisma from "../prismaClient.js";
+import prisma from "../prismaClient";
 import { validateSession } from "../services/sessionService";
 
 interface DecodedToken {
