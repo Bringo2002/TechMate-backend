@@ -1,27 +1,28 @@
 {
   "compilerOptions": {
-    // ✅ Use CommonJS for stability (avoids .js extension headaches)
-    "module": "commonjs",
-    "target": "es2016",
-    "moduleResolution": "node",
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
 
-    // ✅ Project structure
-    "rootDir": ".",
+    // ✅ Output + project structure
     "outDir": "./dist",
+    "rootDir": "./src",
 
-    // ✅ Strictness + compatibility
+    // ✅ Type safety
     "strict": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
 
-    // ✅ Path aliases for clean imports
-    "baseUrl": "./src",
-    "paths": {
-      "@/*": ["*"]
-    }
+    // ✅ Node types
+    "types": ["node"]
   },
-
-  // ✅ Include your source + prisma client
-  "include": ["src/**/*.ts", "prisma/**/*.ts"]
+  "include": [
+    "src/**/*",
+    "prisma/**/*.ts"   // 👈 Include Prisma-related scripts/migrations
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
