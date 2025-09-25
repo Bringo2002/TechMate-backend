@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import requestRoutes from './routes/requestRoutes.js';
-import authRoutes from "./routes/authRoutes";
+import authRoutes from "./routes/authRoutes.js";
 import generalLimiter from "./middleware/rateLimiter.js";
-import messageRoute from './routes/messageRoutes';
-import profileRoutes from './routes/profileRoutes';
-import dashboardRoutes from "./routes/dashboardRoutes"
+import messageRoute from './routes/messageRoutes.js';
+import profileRoutes from './routes/profileRoutes.js';
+import dashboardRoutes from "./routes/dashboardRoutes.js"
 
 
 const app = express();

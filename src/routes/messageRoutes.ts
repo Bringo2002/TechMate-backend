@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { sendMessage, getConversation, getUserInbox } from "../controllers/messageController";
-import { protect } from "../middleware/authMiddleware";
+import { sendMessage, getConversation, getUserInbox } from "../controllers/messageController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = Router();
 

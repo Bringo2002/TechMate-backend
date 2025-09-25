@@ -1,4 +1,4 @@
-import prisma from "../prismaClient"; // Import the Prisma client instance to interact with the database
+import prisma from "../prismaClient.js"; // Import the Prisma client instance to interact with the database
 
 /**
  * Send a message from one user to another

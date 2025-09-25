@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import prisma from "../prismaClient.js";
-import generateToken from "../utils/generateToken";
+import generateToken from "../utils/generateToken.js";
 import jwt from "jsonwebtoken";
-import { sendNotification } from "../services/notificationService";;
-import { createSession } from "../services/sessionService";
+import { sendNotification } from "../services/notificationService.js";;
+import { createSession } from "../services/sessionService.js";
 
 
 export const register = async (req: Request, res: Response): Promise<Response | void> => {

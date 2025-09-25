@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getUserProfile, updateUserProfile } from "../services/profileService";
+import { getUserProfile, updateUserProfile } from "../services/profileService.js";
 import { z } from "zod";
 import prisma from "../prismaClient.js";
 

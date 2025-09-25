@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import axios from "axios";
-import prisma from "../prismaClient";
+import prisma from "../prismaClient.js";
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,

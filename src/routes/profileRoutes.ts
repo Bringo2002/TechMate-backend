@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { getProfile, updateProfile, uploadAvatar } from "../controllers/profileController";
-import { protect } from "../middleware/authMiddleware";
+import { getProfile, updateProfile, uploadAvatar } from "../controllers/profileController.js";
+import { protect } from "../middleware/authMiddleware.js";
 import multer from "multer";
 
 const router = Router();

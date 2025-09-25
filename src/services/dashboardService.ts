@@ -1,8 +1,8 @@
 // ======================================
 // FILE: src/services/dashboardService.ts
 // ======================================
-import prisma from "../prismaClient";
-import { OverviewStats, SeriesPoint, RequestBreakdownItem, RecentRequestItem, TimeBucket } from "../types/dashboard";
+import prisma from "../prismaClient.js";
+import { OverviewStats, SeriesPoint, RequestBreakdownItem, RecentRequestItem, TimeBucket } from "../types/dashboard.js";
 
 
 export async function getOverview(from: Date, to: Date): Promise<OverviewStats> {

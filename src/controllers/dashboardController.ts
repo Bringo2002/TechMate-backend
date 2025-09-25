@@ -2,15 +2,15 @@
 // FILE: src/controllers/dashboardController.ts
 // ======================================
 import { Request, Response } from "express";
-import { rangeQuerySchema } from "../validators/dashboardValidators";
+import { rangeQuerySchema } from "../validators/dashboardValidators.js";
 import {
   getOverview,
   getUserGrowth,
   getRevenueSeries,
   getRequestBreakdown,
   getRecentRequests,
-} from "../services/dashboardService";
-import { sendCachedJson } from "../utils/httpCache";
+} from "../services/dashboardService.js";
+import { sendCachedJson } from "../utils/httpCache.js";
 
 // ---------------------------
 // Overview Handler

@@ -1,4 +1,4 @@
-import prisma from "@/prismaClient";
+import prisma from "../prismaClient.js";
 import { v4 as uuid } from "uuid";
 
 export const createSession = async (userId: string, ip?: string, userAgent?: string) => {

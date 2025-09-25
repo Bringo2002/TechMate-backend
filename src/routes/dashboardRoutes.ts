@@ -2,9 +2,9 @@
 // FILE: src/routes/dashboardRoutes.ts
 // ======================================
 import { Router } from "express";
-import { overviewHandler, usersSeriesHandler, revenueSeriesHandler, requestsBreakdownHandler, recentRequestsHandler } from "../controllers/dashboardController";
-import { protect } from "../middleware/authMiddleware"; // existing in your codebase
-import { adminOnly } from "../middleware/adminOnly";
+import { overviewHandler, usersSeriesHandler, revenueSeriesHandler, requestsBreakdownHandler, recentRequestsHandler } from "../controllers/dashboardController.js";
+import { protect } from "../middleware/authMiddleware.js"; // existing in your codebase
+import { adminOnly } from "../middleware/adminOnly.js";
 // Optional: import { dashboardLimiter } from "../middleware/rateLimiter";
 
 

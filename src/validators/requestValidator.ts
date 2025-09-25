@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { REQUEST_STATUSES } from "../constants/request";
+import { REQUEST_STATUSES } from "../constants/request.js";
 
 export const createRequestSchema = z.object({
   userId: z.string().uuid(),

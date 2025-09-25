@@ -2,7 +2,7 @@
 // FILE: src/validators/dashboardValidators.ts
 // ======================================
 import { z } from "zod";
-import { TimeBucket } from "../types/dashboard";
+import { TimeBucket } from "../types/dashboard.js";
 
 
 const isoDateString = z
