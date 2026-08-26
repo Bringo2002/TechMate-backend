@@ -12,6 +12,10 @@ import { MessagesModule } from './messages/messages.module';
 import { RequestsModule } from './requests/requests.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { ServicesModule } from './services/services.module';
+import { BookingsModule } from './bookings/bookings.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -51,6 +55,10 @@ import { NotificationsModule } from './notifications/notifications.module';
     RequestsModule,
     DashboardModule,
     NotificationsModule,
+    ServicesModule,
+    BookingsModule,
+    ReviewsModule,
+    PaymentsModule,
   ],
   controllers: [],
   providers: [
