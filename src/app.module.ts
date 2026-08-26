@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { MessagesModule } from './messages/messages.module';
 import { RequestsModule } from './requests/requests.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     MessagesModule,
     RequestsModule,
     DashboardModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [
