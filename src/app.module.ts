@@ -9,6 +9,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { UsersModule } from './users/users.module';
 import { MessagesModule } from './messages/messages.module';
+import { RequestsModule } from './requests/requests.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { MessagesModule } from './messages/messages.module';
     UsersModule,
     AuthModule,
     MessagesModule,
+    RequestsModule,
   ],
   controllers: [],
   providers: [
