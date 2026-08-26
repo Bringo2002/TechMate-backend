@@ -10,6 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { v4 as uuid } from 'uuid';
 
 import { User } from '../users/entities/user.entity';
@@ -18,6 +19,7 @@ import { LoginAttempt } from './entities/login-attempt.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
+import { PasswordResetToken } from './entities/token.entity';
 
 const SALT_ROUNDS = 10;
 const MAX_IP_ATTEMPTS = 10;
@@ -37,6 +39,9 @@ export class AuthService {
 
     @InjectRepository(LoginAttempt)
     private readonly loginAttemptRepo: Repository<LoginAttempt>,
+
+    @InjectRepository(PasswordResetToken)
+    private readonly resetTokenRepo: Repository<PasswordResetToken>,
 
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
@@ -235,5 +240,97 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...safe } = user;
     return safe;
+  }
+
+  // ──────────────────────────────────────────
+  // GOOGLE OAUTH LOGIN
+  // ──────────────────────────────────────────
+  async googleLogin(email: string, displayName: string, avatar?: string) {
+    let user = await this.userRepo.findOne({ where: { email } });
+
+    if (!user) {
+      // Auto-register Google users with a random password
+      const randomPassword = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), SALT_ROUNDS);
+      user = this.userRepo.create({
+        name: displayName || email.split('@')[0],
+        email,
+        password: randomPassword,
+        avatarUrl: avatar || null,
+      });
+      await this.userRepo.save(user);
+    }
+
+    const { accessToken, sessionToken } = await this.createTokens(user);
+
+    return {
+      user: this.sanitizeUser(user),
+      accessToken,
+      refreshToken: sessionToken,
+    };
+  }
+
+  // ──────────────────────────────────────────
+  // PASSWORD RESET — REQUEST
+  // ──────────────────────────────────────────
+  async requestPasswordReset(email: string): Promise<{ message: string }> {
+    const user = await this.userRepo.findOne({ where: { email } });
+
+    // Always return success to prevent email enumeration
+    if (!user) {
+      return { message: 'If that email exists, a reset link has been sent.' };
+    }
+
+    // Invalidate any existing reset tokens for this user
+    await this.resetTokenRepo.delete({ userId: user.id });
+
+    // Generate a secure token
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    const resetToken = this.resetTokenRepo.create({
+      token,
+      userId: user.id,
+      expiresAt,
+    });
+    await this.resetTokenRepo.save(resetToken);
+
+    // In production, send an email with the reset link
+    // For now, log it (the frontend can use /api/auth/reset-password/confirm directly)
+    const frontendUrl = this.config.get<string>('FRONTEND_URL', 'http://localhost:5173');
+    const resetLink = `${frontendUrl}/reset-password?token=${token}`;
+    console.log(`[Password Reset] Link for ${email}: ${resetLink}`);
+
+    return { message: 'If that email exists, a reset link has been sent.' };
+  }
+
+  // ──────────────────────────────────────────
+  // PASSWORD RESET — CONFIRM
+  // ──────────────────────────────────────────
+  async confirmPasswordReset(token: string, newPassword: string): Promise<{ message: string }> {
+    const resetToken = await this.resetTokenRepo.findOne({ where: { token } });
+
+    if (!resetToken) {
+      throw new UnauthorizedException('Invalid or expired reset token');
+    }
+
+    if (new Date() > resetToken.expiresAt) {
+      await this.resetTokenRepo.delete({ id: resetToken.id });
+      throw new UnauthorizedException('Reset token has expired');
+    }
+
+    // Update password
+    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    await this.userRepo.update(resetToken.userId, { password: hashedPassword });
+
+    // Delete the used token
+    await this.resetTokenRepo.delete({ id: resetToken.id });
+
+    // Invalidate all existing sessions for security
+    await this.sessionRepo.update(
+      { userId: resetToken.userId },
+      { valid: false, revoked: true },
+    );
+
+    return { message: 'Password has been reset successfully' };
   }
 }

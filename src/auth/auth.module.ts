@@ -7,11 +7,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 
 import { Session } from './entities/session.entity';
 import { LoginAttempt } from './entities/login-attempt.entity';
+import { PasswordResetToken } from './entities/token.entity';
 
 import { UsersModule } from '../users/users.module';
 
@@ -21,7 +23,7 @@ import { UsersModule } from '../users/users.module';
     UsersModule,
 
     // Register auth-owned entities
-    TypeOrmModule.forFeature([Session, LoginAttempt]),
+    TypeOrmModule.forFeature([Session, LoginAttempt, PasswordResetToken]),
 
     // Passport with JWT as default strategy
     PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -42,6 +44,7 @@ import { UsersModule } from '../users/users.module';
   providers: [
     AuthService,
     JwtStrategy,
+    GoogleStrategy,
     JwtAuthGuard,
     RolesGuard,
   ],
