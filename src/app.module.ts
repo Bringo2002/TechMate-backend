@@ -4,6 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
+import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { RolesGuard } from './auth/guards/roles.guard';
+import { UsersModule } from './users/users.module';
+
 @Module({
   imports: [
     // Load .env and make ConfigService available globally
@@ -34,13 +39,28 @@ import { APP_GUARD } from '@nestjs/core';
       ttl: 60000,   // 60 seconds window
       limit: 30,    // 30 requests per window per IP
     }]),
+
+    // Feature modules
+    UsersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [
-    // Apply throttler globally — individual routes can override with @SkipThrottle()
+    // Global guards — applied in this order:
+    // 1. Throttler (rate limiting)
+    // 2. JwtAuth (authentication — skippable with @Public())
+    // 3. Roles (authorization — skippable without @Roles())
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })
