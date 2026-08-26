@@ -10,6 +10,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { UsersModule } from './users/users.module';
 import { MessagesModule } from './messages/messages.module';
 import { RequestsModule } from './requests/requests.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { RequestsModule } from './requests/requests.module';
     AuthModule,
     MessagesModule,
     RequestsModule,
+    DashboardModule,
   ],
   controllers: [],
   providers: [
