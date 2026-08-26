@@ -7,5 +7,5 @@
     "incremental": false
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "test", "dist", "src/_legacy", "**/*.spec.ts"]
+  "exclude": ["node_modules", "test", "dist", "**/*.spec.ts"]
 }
