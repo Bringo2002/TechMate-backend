@@ -33,7 +33,7 @@ async function seed() {
   if (!admin) {
     const hashedPassword = await bcrypt.hash('AdminPassword123!', 10);
     admin = userRepo.create({
-      name: 'System Administrator',
+      fullName: 'System Administrator',
       email: adminEmail,
       password: hashedPassword,
       role: Role.ADMIN,
@@ -51,7 +51,7 @@ async function seed() {
   if (!client) {
     const hashedPassword = await bcrypt.hash('ClientPassword123!', 10);
     client = userRepo.create({
-      name: 'John Client',
+      fullName: 'John Client',
       email: clientEmail,
       password: hashedPassword,
       role: Role.USER,

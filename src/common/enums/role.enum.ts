@@ -1,8 +1,10 @@
 /**
- * Role enum — matches the existing PostgreSQL enum type "Role"
- * created by Prisma migrations.
+ * Role enum — matches the real "profiles.role" column, which is a plain
+ * TEXT + CHECK column (role IN ('user','admin','moderator')) in the
+ * restored schema, not a native Postgres enum type.
  */
 export enum Role {
-  USER = 'USER',
-  ADMIN = 'ADMIN',
+  USER = 'user',
+  ADMIN = 'admin',
+  MODERATOR = 'moderator',
 }

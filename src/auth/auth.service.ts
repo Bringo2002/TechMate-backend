@@ -60,7 +60,7 @@ export class AuthService {
     // Hash password and create user
     const hashedPassword = await bcrypt.hash(dto.password, SALT_ROUNDS);
     const user = this.userRepo.create({
-      name: dto.name,
+      fullName: dto.name,
       email: dto.email,
       password: hashedPassword,
     });
@@ -252,7 +252,7 @@ export class AuthService {
       // Auto-register Google users with a random password
       const randomPassword = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), SALT_ROUNDS);
       user = this.userRepo.create({
-        name: displayName || email.split('@')[0],
+        fullName: displayName || email.split('@')[0],
         email,
         password: randomPassword,
         avatarUrl: avatar || null,
