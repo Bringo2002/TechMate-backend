@@ -9,16 +9,17 @@ import {
   Index,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { Business } from '../../businesses/entities/business.entity';
+import { ClientInquiry } from '../../client-inquiries/entities/client-inquiry.entity';
 
 /**
  * Matches the real "projects" table from production_schema.sql.
  * This is the actual product schema TechMate's frontend dashboards use —
  * NOT the old marketplace "Service" model.
  *
- * business_id, inquiry_id, proposal_id are kept as plain UUID columns
- * (no relation yet) since Businesses/ClientInquiries/Proposals modules
- * haven't been built in this backend yet. Add the @ManyToOne once those
- * modules exist — the columns already match the restored data either way.
+ * proposal_id is kept as a plain UUID column (no relation) since the
+ * Proposals module hasn't been built yet. business_id and inquiry_id
+ * now have real relations — both modules exist.
  */
 export enum ProjectStatus {
   PLANNING = 'planning',
@@ -132,4 +133,12 @@ export class Project {
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @ManyToOne(() => Business, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'business_id' })
+  business: Business | null;
+
+  @ManyToOne(() => ClientInquiry, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'inquiry_id' })
+  inquiry: ClientInquiry | null;
 }
