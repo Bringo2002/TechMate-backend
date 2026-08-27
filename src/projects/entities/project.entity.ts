@@ -11,15 +11,15 @@ import {
 import { User } from '../../users/entities/user.entity';
 import { Business } from '../../businesses/entities/business.entity';
 import { ClientInquiry } from '../../client-inquiries/entities/client-inquiry.entity';
+import { Proposal } from '../../proposals/entities/proposal.entity';
 
 /**
  * Matches the real "projects" table from production_schema.sql.
  * This is the actual product schema TechMate's frontend dashboards use —
  * NOT the old marketplace "Service" model.
  *
- * proposal_id is kept as a plain UUID column (no relation) since the
- * Proposals module hasn't been built yet. business_id and inquiry_id
- * now have real relations — both modules exist.
+ * business_id, inquiry_id, and proposal_id all now have real relations —
+ * every referenced module exists.
  */
 export enum ProjectStatus {
   PLANNING = 'planning',
@@ -141,4 +141,8 @@ export class Project {
   @ManyToOne(() => ClientInquiry, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'inquiry_id' })
   inquiry: ClientInquiry | null;
+
+  @ManyToOne(() => Proposal, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'proposal_id' })
+  proposal: Proposal | null;
 }

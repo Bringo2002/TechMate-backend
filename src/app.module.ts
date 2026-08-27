@@ -20,6 +20,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { InvoicesModule } from './invoices/invoices.module';
 import { BusinessesModule } from './businesses/businesses.module';
 import { ClientInquiriesModule } from './client-inquiries/client-inquiries.module';
+import { ProposalsModule } from './proposals/proposals.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { ClientInquiriesModule } from './client-inquiries/client-inquiries.modul
     InvoicesModule,
     BusinessesModule,
     ClientInquiriesModule,
+    ProposalsModule,
   ],
   controllers: [],
   providers: [
