@@ -18,6 +18,7 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { PaymentsModule } from './payments/payments.module';
 import { ProjectsModule } from './projects/projects.module';
 import { InvoicesModule } from './invoices/invoices.module';
+import { BusinessesModule } from './businesses/businesses.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { InvoicesModule } from './invoices/invoices.module';
     PaymentsModule,
     ProjectsModule,
     InvoicesModule,
+    BusinessesModule,
   ],
   controllers: [],
   providers: [
