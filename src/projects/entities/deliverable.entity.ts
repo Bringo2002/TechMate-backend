@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Project } from './project.entity';
+import { Order } from '../../orders/entities/order.entity';
 
 export enum DeliverableStatus {
   PENDING = 'pending',
@@ -20,9 +21,8 @@ export enum DeliverableStatus {
 }
 
 /**
- * Matches "deliverables". order_id is kept as a plain nullable UUID column
- * (no relation) — the Orders module isn't built yet in this backend
- * (planned for a later phase); the column already matches restored data.
+ * Matches "deliverables". order_id now has a real relation — Orders
+ * module exists.
  */
 @Entity('deliverables')
 export class Deliverable {
@@ -30,6 +30,7 @@ export class Deliverable {
   id: string;
 
   @Column({ name: 'order_id', nullable: true })
+  @Index()
   orderId: string | null;
 
   @Column({ name: 'project_id', nullable: true })
@@ -91,6 +92,10 @@ export class Deliverable {
   @ManyToOne(() => Project, { onDelete: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'project_id' })
   project: Project | null;
+
+  @ManyToOne(() => Order, { onDelete: 'CASCADE', nullable: true })
+  @JoinColumn({ name: 'order_id' })
+  order: Order | null;
 
   @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'created_by' })

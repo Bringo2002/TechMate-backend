@@ -21,6 +21,7 @@ import { InvoicesModule } from './invoices/invoices.module';
 import { BusinessesModule } from './businesses/businesses.module';
 import { ClientInquiriesModule } from './client-inquiries/client-inquiries.module';
 import { ProposalsModule } from './proposals/proposals.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { ProposalsModule } from './proposals/proposals.module';
     BusinessesModule,
     ClientInquiriesModule,
     ProposalsModule,
+    OrdersModule,
   ],
   controllers: [],
   providers: [

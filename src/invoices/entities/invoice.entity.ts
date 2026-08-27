@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Project } from '../../projects/entities/project.entity';
+import { Order } from '../../orders/entities/order.entity';
 
 export enum InvoiceStatus {
   DRAFT = 'draft',
@@ -28,8 +29,7 @@ export enum InvoiceStatus {
  * marked insert:false/update:false so TypeORM never tries to write it, only reads
  * whatever Postgres computes.
  *
- * order_id is a plain nullable UUID column (no relation) — Orders module isn't
- * built yet (next phase). project_id and user_id DO get real relations since
+ * order_id now has a real relation — Orders module exists. project_id and user_id DO get real relations since
  * Projects and Users already exist in this backend.
  */
 @Entity('invoices')
@@ -114,4 +114,8 @@ export class Invoice {
   @ManyToOne(() => Project, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'project_id' })
   project: Project | null;
+
+  @ManyToOne(() => Order, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'order_id' })
+  order: Order | null;
 }
