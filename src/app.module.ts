@@ -16,6 +16,8 @@ import { ServicesModule } from './services/services.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { PaymentsModule } from './payments/payments.module';
+import { ProjectsModule } from './projects/projects.module';
+import { InvoicesModule } from './invoices/invoices.module';
 
 @Module({
   imports: [
@@ -59,6 +61,8 @@ import { PaymentsModule } from './payments/payments.module';
     BookingsModule,
     ReviewsModule,
     PaymentsModule,
+    ProjectsModule,
+    InvoicesModule,
   ],
   controllers: [],
   providers: [
