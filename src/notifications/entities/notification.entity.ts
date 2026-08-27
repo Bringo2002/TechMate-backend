@@ -9,48 +9,65 @@ import {
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 
-/**
- * NotificationChannel enum — matches existing PostgreSQL enum "NotificationChannel".
- */
-export enum NotificationChannel {
-  IN_APP = 'IN_APP',
-  EMAIL = 'EMAIL',
-  TELEGRAM = 'TELEGRAM',
+export enum NotificationType {
+  INFO = 'info',
+  SUCCESS = 'success',
+  WARNING = 'warning',
+  ERROR = 'error',
 }
 
 /**
- * Notification entity — maps to the existing "Notification" table.
+ * Matches "notifications" from production_schema.sql exactly. Previously
+ * mapped to a leftover Prisma "Notification" table with a different,
+ * narrower shape — rebuilt here rather than patched, same treatment
+ * Projects got.
+ *
+ * Note what the real schema does NOT have: no updated_at, no deleted_at.
+ * Notifications are immutable once created (aside from is_read/read_at)
+ * and hard-deleted, not soft-deleted — matched exactly, not "improved"
+ * with columns the restored schema doesn't define.
+ *
+ * type is a plain TEXT+CHECK column, not a native Postgres enum — same
+ * treatment as elsewhere in this codebase.
  */
-@Entity('Notification')
+@Entity('notifications')
 export class Notification {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'user_id' })
   @Index()
-  userId: string | null;
+  userId: string;
 
   @Column()
-  type: string; // e.g. "LOGIN_ALERT", "ACCOUNT_LOCK"
+  title: string;
 
-  @Column()
-  message: string;
+  @Column({ nullable: true })
+  message: string | null;
 
-  @Column({
-    type: 'enum',
-    enum: NotificationChannel,
-    enumName: 'NotificationChannel',
-    default: NotificationChannel.IN_APP,
-  })
-  channel: NotificationChannel;
+  @Column({ type: 'varchar', default: NotificationType.INFO })
+  type: NotificationType;
 
-  @CreateDateColumn()
+  @Column({ nullable: true })
+  category: string | null;
+
+  @Column({ nullable: true })
+  link: string | null;
+
+  @Column({ name: 'is_read', default: false })
+  @Index()
+  isRead: boolean;
+
+  @Column({ name: 'read_at', type: 'timestamptz', nullable: true })
+  readAt: Date | null;
+
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @Column({ default: false })
-  read: boolean;
+  @Column('jsonb', { default: () => "'{}'" })
+  metadata: Record<string, unknown>;
 
-  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'userId' })
-  user: User | null;
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }
