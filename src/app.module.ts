@@ -26,6 +26,8 @@ import { TeamsModule } from './teams/teams.module';
 import { RevenueTargetsModule } from './revenue-targets/revenue-targets.module';
 import { ServiceCategoriesModule } from './service-categories/service-categories.module';
 import { ActivityLogsModule } from './activity-logs/activity-logs.module';
+import { EnvironmentsModule } from './environments/environments.module';
+import { DeploymentsModule } from './deployments/deployments.module';
 
 @Module({
   imports: [
@@ -79,6 +81,8 @@ import { ActivityLogsModule } from './activity-logs/activity-logs.module';
     RevenueTargetsModule,
     ServiceCategoriesModule,
     ActivityLogsModule,
+    EnvironmentsModule,
+    DeploymentsModule,
   ],
   controllers: [],
   providers: [
