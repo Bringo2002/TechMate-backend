@@ -24,6 +24,7 @@ import { ProposalsModule } from './proposals/proposals.module';
 import { OrdersModule } from './orders/orders.module';
 import { TeamsModule } from './teams/teams.module';
 import { RevenueTargetsModule } from './revenue-targets/revenue-targets.module';
+import { ServiceCategoriesModule } from './service-categories/service-categories.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { RevenueTargetsModule } from './revenue-targets/revenue-targets.module';
     OrdersModule,
     TeamsModule,
     RevenueTargetsModule,
+    ServiceCategoriesModule,
   ],
   controllers: [],
   providers: [

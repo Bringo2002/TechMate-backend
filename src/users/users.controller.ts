@@ -22,6 +22,7 @@ import { User } from './entities/user.entity';
 /**
  * Users controller — profile management
  *
+ * GET  /api/users                — list all users (admin/lookup use)
  * GET  /api/users/profile        — get own profile
  * PUT  /api/users/profile        — update name/bio/avatarUrl
  * POST /api/users/profile/avatar — upload avatar image
@@ -31,6 +32,12 @@ import { User } from './entities/user.entity';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'List all users' })
+  async findAll() {
+    return this.usersService.findAll();
+  }
 
   @Get('profile')
   @ApiOperation({ summary: 'Get current user profile' })

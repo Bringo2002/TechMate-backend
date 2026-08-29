@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
@@ -10,6 +10,16 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
   ) {}
+
+  /**
+   * List all users (excludes soft-deleted). Matches the frontend's
+   * `profiles` select used e.g. in revenue.service.ts for the client
+   * name/company lookup. Password is already excluded from
+   * serialization via @Exclude() on the entity.
+   */
+  async findAll(): Promise<User[]> {
+    return this.userRepo.find({ where: { deletedAt: IsNull() }, order: { fullName: 'ASC' } });
+  }
 
   /**
    * Get a user's profile by ID.
