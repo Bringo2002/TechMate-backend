@@ -23,6 +23,7 @@ import { ClientInquiriesModule } from './client-inquiries/client-inquiries.modul
 import { ProposalsModule } from './proposals/proposals.module';
 import { OrdersModule } from './orders/orders.module';
 import { TeamsModule } from './teams/teams.module';
+import { RevenueTargetsModule } from './revenue-targets/revenue-targets.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { TeamsModule } from './teams/teams.module';
     ProposalsModule,
     OrdersModule,
     TeamsModule,
+    RevenueTargetsModule,
   ],
   controllers: [],
   providers: [
