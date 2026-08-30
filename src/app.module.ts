@@ -29,6 +29,8 @@ import { ActivityLogsModule } from './activity-logs/activity-logs.module';
 import { EnvironmentsModule } from './environments/environments.module';
 import { DeploymentsModule } from './deployments/deployments.module';
 import { SupportTicketsModule } from './support-tickets/support-tickets.module';
+import { UserSettingsModule } from './user-settings/user-settings.module';
+import { AdminMetricsModule } from './admin-metrics/admin-metrics.module';
 
 @Module({
   imports: [
@@ -85,6 +87,8 @@ import { SupportTicketsModule } from './support-tickets/support-tickets.module';
     EnvironmentsModule,
     DeploymentsModule,
     SupportTicketsModule,
+    UserSettingsModule,
+    AdminMetricsModule,
   ],
   controllers: [],
   providers: [
