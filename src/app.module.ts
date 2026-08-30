@@ -28,6 +28,7 @@ import { ServiceCategoriesModule } from './service-categories/service-categories
 import { ActivityLogsModule } from './activity-logs/activity-logs.module';
 import { EnvironmentsModule } from './environments/environments.module';
 import { DeploymentsModule } from './deployments/deployments.module';
+import { SupportTicketsModule } from './support-tickets/support-tickets.module';
 
 @Module({
   imports: [
@@ -83,6 +84,7 @@ import { DeploymentsModule } from './deployments/deployments.module';
     ActivityLogsModule,
     EnvironmentsModule,
     DeploymentsModule,
+    SupportTicketsModule,
   ],
   controllers: [],
   providers: [
