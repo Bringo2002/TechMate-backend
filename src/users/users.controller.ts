@@ -4,6 +4,7 @@ import {
   Put,
   Post,
   Body,
+  Param,
   Req,
   UseInterceptors,
   UploadedFile,
@@ -26,6 +27,7 @@ import { User } from './entities/user.entity';
  * GET  /api/users/profile        — get own profile
  * PUT  /api/users/profile        — update name/bio/avatarUrl
  * POST /api/users/profile/avatar — upload avatar image
+ * GET  /api/users/:id            — get a specific user by id
  */
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -91,5 +93,11 @@ export class UsersController {
     }
     const avatarUrl = `/uploads/avatars/${file.filename}`;
     return this.usersService.updateAvatar(req.user.id, avatarUrl);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a user by id' })
+  async findOne(@Param('id') id: string) {
+    return this.usersService.getProfile(id);
   }
 }
