@@ -9,13 +9,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { UsersModule } from './users/users.module';
 import { MessagesModule } from './messages/messages.module';
-import { RequestsModule } from './requests/requests.module';
-import { DashboardModule } from './dashboard/dashboard.module';
 import { NotificationsModule } from './notifications/notifications.module';
-import { ServicesModule } from './services/services.module';
-import { BookingsModule } from './bookings/bookings.module';
-import { ReviewsModule } from './reviews/reviews.module';
-import { PaymentsModule } from './payments/payments.module';
 import { ProjectsModule } from './projects/projects.module';
 import { InvoicesModule } from './invoices/invoices.module';
 import { BusinessesModule } from './businesses/businesses.module';
@@ -67,13 +61,7 @@ import { AdminMetricsModule } from './admin-metrics/admin-metrics.module';
     UsersModule,
     AuthModule,
     MessagesModule,
-    RequestsModule,
-    DashboardModule,
     NotificationsModule,
-    ServicesModule,
-    BookingsModule,
-    ReviewsModule,
-    PaymentsModule,
     ProjectsModule,
     InvoicesModule,
     BusinessesModule,

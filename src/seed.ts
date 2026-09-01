@@ -5,7 +5,6 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import { User } from './users/entities/user.entity';
-import { Service } from './services/entities/service.entity';
 import { Role } from './common/enums';
 
 const AppDataSource = new DataSource({
@@ -15,7 +14,7 @@ const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'techmate',
-  entities: [User, Service],
+  entities: [User],
   synchronize: false,
   logging: true,
 });
@@ -25,7 +24,6 @@ async function seed() {
   await AppDataSource.initialize();
 
   const userRepo = AppDataSource.getRepository(User);
-  const serviceRepo = AppDataSource.getRepository(Service);
 
   // 1. Admin User
   const adminEmail = 'admin@techmate.com';
@@ -61,47 +59,6 @@ async function seed() {
     console.log('✅ Sample client created: client@techmate.com / ClientPassword123!');
   } else {
     console.log('ℹ️ Client user already exists');
-  }
-
-  // 3. Default Services
-  const defaultServices = [
-    {
-      name: 'Web Application Development',
-      description: 'Custom React / Next.js web applications, e-commerce, and SaaS platforms.',
-      price: 2500,
-      deliveryDays: 14,
-      isActive: true,
-    },
-    {
-      name: 'Mobile App Development',
-      description: 'Cross-platform iOS and Android mobile apps built with React Native / Flutter.',
-      price: 3500,
-      deliveryDays: 21,
-      isActive: true,
-    },
-    {
-      name: 'API & Microservices Architecture',
-      description: 'Scalable NestJS REST & GraphQL APIs, microservices, and database design.',
-      price: 1800,
-      deliveryDays: 10,
-      isActive: true,
-    },
-    {
-      name: 'UI/UX Design & Prototyping',
-      description: 'Figma prototypes, UI component libraries, design systems, and UX audits.',
-      price: 1200,
-      deliveryDays: 7,
-      isActive: true,
-    },
-  ];
-
-  for (const svcData of defaultServices) {
-    const existing = await serviceRepo.findOne({ where: { name: svcData.name } });
-    if (!existing) {
-      const svc = serviceRepo.create(svcData);
-      await serviceRepo.save(svc);
-      console.log(`✅ Service created: ${svcData.name}`);
-    }
   }
 
   console.log('🎉 Seeding finished successfully!');
