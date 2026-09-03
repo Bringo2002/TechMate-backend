@@ -333,4 +333,31 @@ export class AuthService {
 
     return { message: 'Password has been reset successfully' };
   }
+
+  /**
+   * Authenticated self-service password change — distinct from the
+   * forgot-password token flow above. Requires the current password to
+   * verify the request actually comes from the account owner, not just
+   * anyone with a live session (sessions can be long-lived; a stolen
+   * session token alone shouldn't be enough to lock the real owner out).
+   */
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid) {
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    await this.userRepo.update(userId, { password: hashedPassword });
+
+    // Invalidate all other sessions for security, same as the reset-password flow
+    await this.sessionRepo.update({ userId }, { valid: false, revoked: true });
+
+    return { message: 'Password changed successfully' };
+  }
 }

@@ -17,3 +17,14 @@ export class ConfirmPasswordResetDto {
   @MinLength(8)
   newPassword: string;
 }
+
+export class ChangePasswordDto {
+  @ApiProperty({ example: 'currentP@ss123' })
+  @IsString()
+  currentPassword: string;
+
+  @ApiProperty({ example: 'newSecureP@ss123' })
+  @IsString()
+  @MinLength(8)
+  newPassword: string;
+}

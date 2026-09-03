@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Patch,
   Get,
   Body,
   Req,
@@ -19,6 +20,7 @@ import { LoginDto } from './dto/login.dto';
 import {
   RequestPasswordResetDto,
   ConfirmPasswordResetDto,
+  ChangePasswordDto,
 } from './dto/password-reset.dto';
 import { Public } from './decorators/public.decorator';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
@@ -36,6 +38,7 @@ import { User } from '../users/entities/user.entity';
  * GET  /api/auth/google/callback       — Google OAuth callback (public)
  * POST /api/auth/reset-password        — request password reset (public)
  * POST /api/auth/reset-password/confirm — confirm password reset (public)
+ * PATCH /api/auth/change-password       — change password (authenticated, requires current password)
  */
 @ApiTags('Auth')
 @Controller('auth')
@@ -137,5 +140,15 @@ export class AuthController {
   @ApiOperation({ summary: 'Confirm password reset with token' })
   async confirmPasswordReset(@Body() dto: ConfirmPasswordResetDto) {
     return this.authService.confirmPasswordReset(dto.token, dto.newPassword);
+  }
+
+  @Patch('change-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Change password for the current authenticated user' })
+  async changePassword(
+    @Req() req: Request & { user: User },
+    @Body() dto: ChangePasswordDto,
+  ) {
+    return this.authService.changePassword(req.user.id, dto.currentPassword, dto.newPassword);
   }
 }
