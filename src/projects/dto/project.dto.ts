@@ -3,6 +3,7 @@ import {
   IsString,
   IsOptional,
   IsEnum,
+  IsIn,
   IsNumber,
   IsInt,
   Min,
@@ -26,6 +27,11 @@ export class CreateProjectDto {
   @IsOptional()
   @IsUUID()
   businessId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  technicalLeadId?: string;
 
   @ApiProperty()
   @IsString()
@@ -120,7 +126,29 @@ export class UpdateProjectDto {
   @IsInt()
   @Min(0)
   @Max(100)
+  clientVisibleProgress?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(100)
   healthScore?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  technicalLeadId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  internalNotes?: string;
+
+  @ApiPropertyOptional({ enum: ['low', 'medium', 'high'] })
+  @IsOptional()
+  @IsIn(['low', 'medium', 'high'])
+  riskLevel?: 'low' | 'medium' | 'high';
 
   @ApiPropertyOptional({ type: [String] })
   @IsOptional()

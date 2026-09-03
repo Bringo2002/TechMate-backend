@@ -27,7 +27,7 @@ export enum ProjectStatus {
   REVIEW = 'review',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
-  HELD = 'held',
+  ON_HOLD = 'on_hold',
 }
 
 export enum ProjectPriority {
@@ -99,6 +99,17 @@ export class Project {
   @Column({ default: 0 })
   progress: number;
 
+  /**
+   * Progress percentage visible to the client — deliberately separate
+   * from `progress` (internal) per the real schema's own column
+   * comment: "may differ from internal progress." Added by
+   * phase_1_agency_migration.sql, missed on the initial entity build
+   * (which only read production_schema.sql's original CREATE TABLE,
+   * not this file's later ALTER TABLE additions).
+   */
+  @Column({ name: 'client_visible_progress', default: 0 })
+  clientVisibleProgress: number;
+
   @Column({ name: 'health_score', default: 100 })
   healthScore: number;
 
@@ -110,6 +121,16 @@ export class Project {
 
   @Column({ name: 'payment_status', type: 'varchar', default: ProjectPaymentStatus.UNPAID })
   paymentStatus: ProjectPaymentStatus;
+
+  @Column({ name: 'technical_lead_id', nullable: true })
+  technicalLeadId: string | null;
+
+  /** Private notes not visible to client — per the real schema's column comment. */
+  @Column({ name: 'internal_notes', nullable: true })
+  internalNotes: string | null;
+
+  @Column({ name: 'risk_level', type: 'varchar', nullable: true })
+  riskLevel: 'low' | 'medium' | 'high' | null;
 
   @Column({ name: 'started_at', type: 'timestamptz', nullable: true })
   startedAt: Date | null;
@@ -133,6 +154,10 @@ export class Project {
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'technical_lead_id' })
+  technicalLead: User | null;
 
   @ManyToOne(() => Business, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'business_id' })
