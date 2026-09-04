@@ -55,7 +55,7 @@ export class TeamMember {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'profile_id', nullable: true })
+  @Column({ type: 'varchar', name: 'profile_id', nullable: true })
   profileId: string | null;
 
   @Column({ name: 'full_name' })
@@ -64,7 +64,7 @@ export class TeamMember {
   @Column()
   email: string;
 
-  @Column({ name: 'avatar_url', nullable: true })
+  @Column({ type: 'varchar', name: 'avatar_url', nullable: true })
   avatarUrl: string | null;
 
   @Column({ type: 'varchar', default: TeamMemberRole.DEVELOPER })

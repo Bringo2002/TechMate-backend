@@ -44,10 +44,10 @@ export class Invoice {
   @Index()
   userId: string;
 
-  @Column({ name: 'order_id', nullable: true })
+  @Column({ type: 'varchar', name: 'order_id', nullable: true })
   orderId: string | null;
 
-  @Column({ name: 'project_id', nullable: true })
+  @Column({ type: 'varchar', name: 'project_id', nullable: true })
   @Index()
   projectId: string | null;
 
@@ -85,13 +85,13 @@ export class Invoice {
   @Column({ name: 'paid_date', type: 'timestamptz', nullable: true })
   paidDate: Date | null;
 
-  @Column({ name: 'payment_method', nullable: true })
+  @Column({ type: 'varchar', name: 'payment_method', nullable: true })
   paymentMethod: string | null;
 
-  @Column({ name: 'payment_reference', nullable: true })
+  @Column({ type: 'varchar', name: 'payment_reference', nullable: true })
   paymentReference: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   notes: string | null;
 
   @CreateDateColumn({ name: 'created_at' })

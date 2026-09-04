@@ -39,20 +39,20 @@ export class Message {
   @Index()
   recipientId: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   subject: string | null;
 
   @Column()
   content: string;
 
-  @Column({ name: 'thread_id', nullable: true })
+  @Column({ type: 'varchar', name: 'thread_id', nullable: true })
   @Index()
   threadId: string | null;
 
-  @Column({ name: 'request_id', nullable: true })
+  @Column({ type: 'varchar', name: 'request_id', nullable: true })
   requestId: string | null;
 
-  @Column({ name: 'project_id', nullable: true })
+  @Column({ type: 'varchar', name: 'project_id', nullable: true })
   projectId: string | null;
 
   @Column({ name: 'is_read', default: false })

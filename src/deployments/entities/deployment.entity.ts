@@ -73,11 +73,11 @@ export class Deployment {
   @Column({ name: 'deploy_number', type: 'integer', insert: false, update: false })
   deployNumber: number;
 
-  @Column({ name: 'project_id', nullable: true })
+  @Column({ type: 'varchar', name: 'project_id', nullable: true })
   @Index()
   projectId: string | null;
 
-  @Column({ name: 'environment_id', nullable: true })
+  @Column({ type: 'varchar', name: 'environment_id', nullable: true })
   @Index()
   environmentId: string | null;
 
@@ -97,19 +97,19 @@ export class Deployment {
   @Column({ name: 'current_stage', type: 'varchar', default: DeploymentCurrentStage.QUEUE })
   currentStage: DeploymentCurrentStage;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   branch: string | null;
 
-  @Column({ name: 'commit_hash', nullable: true })
+  @Column({ type: 'varchar', name: 'commit_hash', nullable: true })
   commitHash: string | null;
 
-  @Column({ name: 'commit_message', nullable: true })
+  @Column({ type: 'varchar', name: 'commit_message', nullable: true })
   commitMessage: string | null;
 
-  @Column({ name: 'triggered_by', nullable: true })
+  @Column({ type: 'varchar', name: 'triggered_by', nullable: true })
   triggeredBy: string | null;
 
-  @Column({ name: 'triggered_by_name', nullable: true })
+  @Column({ type: 'varchar', name: 'triggered_by_name', nullable: true })
   triggeredByName: string | null;
 
   @Column({ name: 'trigger_type', type: 'varchar', default: DeploymentTriggerType.MANUAL })
@@ -139,16 +139,16 @@ export class Deployment {
   })
   approvalStatus: DeploymentApprovalStatus;
 
-  @Column({ name: 'approved_by', nullable: true })
+  @Column({ type: 'varchar', name: 'approved_by', nullable: true })
   approvedBy: string | null;
 
   @Column({ name: 'approved_at', type: 'timestamptz', nullable: true })
   approvedAt: Date | null;
 
-  @Column({ name: 'promoted_from_deployment_id', nullable: true })
+  @Column({ type: 'varchar', name: 'promoted_from_deployment_id', nullable: true })
   promotedFromDeploymentId: string | null;
 
-  @Column({ name: 'rollback_from_deployment_id', nullable: true })
+  @Column({ type: 'varchar', name: 'rollback_from_deployment_id', nullable: true })
   rollbackFromDeploymentId: string | null;
 
   @CreateDateColumn({ name: 'created_at' })

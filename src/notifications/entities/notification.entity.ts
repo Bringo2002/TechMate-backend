@@ -42,16 +42,16 @@ export class Notification {
   @Column()
   title: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   message: string | null;
 
   @Column({ type: 'varchar', default: NotificationType.INFO })
   type: NotificationType;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   category: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   link: string | null;
 
   @Column({ name: 'is_read', default: false })

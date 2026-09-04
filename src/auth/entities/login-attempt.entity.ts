@@ -22,14 +22,14 @@ export class LoginAttempt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   @Index()
   userId: string | null;
 
   @Column()
   ip: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   @Index()
   email: string | null;
 

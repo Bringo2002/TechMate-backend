@@ -14,7 +14,7 @@ export class ActivityLog {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'user_id', nullable: true })
+  @Column({ type: 'varchar', name: 'user_id', nullable: true })
   @Index()
   userId: string | null;
 
@@ -22,7 +22,7 @@ export class ActivityLog {
   @Index()
   entityType: string;
 
-  @Column({ name: 'entity_id', nullable: true })
+  @Column({ type: 'varchar', name: 'entity_id', nullable: true })
   @Index()
   entityId: string | null;
 
@@ -35,7 +35,7 @@ export class ActivityLog {
   @Column({ name: 'ip_address', type: 'inet', nullable: true })
   ipAddress: string | null;
 
-  @Column({ name: 'user_agent', nullable: true })
+  @Column({ type: 'varchar', name: 'user_agent', nullable: true })
   userAgent: string | null;
 
   @CreateDateColumn({ name: 'created_at' })

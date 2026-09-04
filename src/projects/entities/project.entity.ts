@@ -53,25 +53,25 @@ export class Project {
   @Index()
   userId: string;
 
-  @Column({ name: 'business_id', nullable: true })
+  @Column({ type: 'varchar', name: 'business_id', nullable: true })
   businessId: string | null;
 
-  @Column({ name: 'inquiry_id', nullable: true })
+  @Column({ type: 'varchar', name: 'inquiry_id', nullable: true })
   inquiryId: string | null;
 
-  @Column({ name: 'proposal_id', nullable: true })
+  @Column({ type: 'varchar', name: 'proposal_id', nullable: true })
   proposalId: string | null;
 
   @Column()
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   client: string | null;
 
   @Column({ default: 'website' })
   type: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   description: string | null;
 
   @Column('numeric', { precision: 12, scale: 2, default: 0 })
@@ -122,11 +122,11 @@ export class Project {
   @Column({ name: 'payment_status', type: 'varchar', default: ProjectPaymentStatus.UNPAID })
   paymentStatus: ProjectPaymentStatus;
 
-  @Column({ name: 'technical_lead_id', nullable: true })
+  @Column({ type: 'varchar', name: 'technical_lead_id', nullable: true })
   technicalLeadId: string | null;
 
   /** Private notes not visible to client — per the real schema's column comment. */
-  @Column({ name: 'internal_notes', nullable: true })
+  @Column({ type: 'varchar', name: 'internal_notes', nullable: true })
   internalNotes: string | null;
 
   @Column({ name: 'risk_level', type: 'varchar', nullable: true })

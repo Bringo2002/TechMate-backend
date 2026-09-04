@@ -13,13 +13,13 @@ export class ServiceCategory {
   @Column({ unique: true })
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   description: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   icon: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   color: string | null;
 
   @Column({ name: 'is_active', default: true })

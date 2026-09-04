@@ -45,31 +45,31 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ name: 'full_name', nullable: true })
+  @Column({ type: 'varchar', name: 'full_name', nullable: true })
   fullName: string | null;
 
-  @Column({ name: 'avatar_url', nullable: true })
+  @Column({ type: 'varchar', name: 'avatar_url', nullable: true })
   avatarUrl: string | null;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ type: 'varchar', unique: true, nullable: true })
   username: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   phone: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   bio: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   company: string | null;
 
-  @Column({ name: 'job_title', nullable: true })
+  @Column({ type: 'varchar', name: 'job_title', nullable: true })
   jobTitle: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   location: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   website: string | null;
 
   @Column({ default: 'UTC' })

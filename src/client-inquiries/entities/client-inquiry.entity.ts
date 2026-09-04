@@ -68,7 +68,7 @@ export class ClientInquiry {
   @Column()
   description: string;
 
-  @Column({ name: 'budget_range', nullable: true })
+  @Column({ type: 'varchar', name: 'budget_range', nullable: true })
   budgetRange: string | null;
 
   @Column({ name: 'budget_min', type: 'numeric', nullable: true })
@@ -77,7 +77,7 @@ export class ClientInquiry {
   @Column({ name: 'budget_max', type: 'numeric', nullable: true })
   budgetMax: number | null;
 
-  @Column({ name: 'preferred_timeline', nullable: true })
+  @Column({ type: 'varchar', name: 'preferred_timeline', nullable: true })
   preferredTimeline: string | null;
 
   @Column({ type: 'date', nullable: true })
@@ -87,7 +87,7 @@ export class ClientInquiry {
   @Index()
   status: InquiryStatus;
 
-  @Column({ name: 'assigned_to', nullable: true })
+  @Column({ type: 'varchar', name: 'assigned_to', nullable: true })
   @Index()
   assignedTo: string | null;
 
@@ -100,7 +100,7 @@ export class ClientInquiry {
   @Column('jsonb', { default: () => "'[]'" })
   attachments: unknown[];
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   source: string | null;
 
   @Column({ name: 'viewed_by_admin_at', type: 'timestamptz', nullable: true })

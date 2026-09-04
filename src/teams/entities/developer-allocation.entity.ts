@@ -67,7 +67,7 @@ export class DeveloperAllocation {
   @Index()
   status: AllocationStatus;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   notes: string | null;
 
   @CreateDateColumn({ name: 'created_at' })

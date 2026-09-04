@@ -43,7 +43,7 @@ export class Proposal {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'inquiry_id', nullable: true })
+  @Column({ type: 'varchar', name: 'inquiry_id', nullable: true })
   @Index()
   inquiryId: string | null;
 
@@ -56,7 +56,7 @@ export class Proposal {
   @Column()
   title: string;
 
-  @Column({ name: 'executive_summary', nullable: true })
+  @Column({ type: 'varchar', name: 'executive_summary', nullable: true })
   executiveSummary: string | null;
 
   @Column({ name: 'scope_of_work' })
@@ -71,10 +71,10 @@ export class Proposal {
   @Column('jsonb', { nullable: true, default: () => "'[]'" })
   milestones: unknown[] | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   assumptions: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   exclusions: string | null;
 
   @Column({ name: 'total_cost', type: 'numeric', precision: 12, scale: 2 })
@@ -83,7 +83,7 @@ export class Proposal {
   @Column({ name: 'payment_schedule', type: 'jsonb', nullable: true })
   paymentSchedule: unknown[] | null;
 
-  @Column({ name: 'payment_terms', nullable: true })
+  @Column({ type: 'varchar', name: 'payment_terms', nullable: true })
   paymentTerms: string | null;
 
   @Column({ default: 'USD' })
@@ -105,16 +105,16 @@ export class Proposal {
   @Column({ name: 'expires_at', type: 'timestamptz', nullable: true })
   expiresAt: Date | null;
 
-  @Column({ name: 'client_notes', nullable: true })
+  @Column({ type: 'varchar', name: 'client_notes', nullable: true })
   clientNotes: string | null;
 
-  @Column({ name: 'rejection_reason', nullable: true })
+  @Column({ type: 'varchar', name: 'rejection_reason', nullable: true })
   rejectionReason: string | null;
 
   @Column({ default: 1 })
   version: number;
 
-  @Column({ name: 'previous_version_id', nullable: true })
+  @Column({ type: 'varchar', name: 'previous_version_id', nullable: true })
   previousVersionId: string | null;
 
   @CreateDateColumn({ name: 'created_at' })

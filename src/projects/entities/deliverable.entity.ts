@@ -29,34 +29,34 @@ export class Deliverable {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'order_id', nullable: true })
+  @Column({ type: 'varchar', name: 'order_id', nullable: true })
   @Index()
   orderId: string | null;
 
-  @Column({ name: 'project_id', nullable: true })
+  @Column({ type: 'varchar', name: 'project_id', nullable: true })
   @Index()
   projectId: string | null;
 
   @Column()
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   description: string | null;
 
   @Column({ type: 'varchar', default: DeliverableStatus.PENDING })
   @Index()
   status: DeliverableStatus;
 
-  @Column({ name: 'file_url', nullable: true })
+  @Column({ type: 'varchar', name: 'file_url', nullable: true })
   fileUrl: string | null;
 
   @Column({ name: 'file_size', type: 'bigint', nullable: true })
   fileSize: number | null;
 
-  @Column({ name: 'file_type', nullable: true })
+  @Column({ type: 'varchar', name: 'file_type', nullable: true })
   fileType: string | null;
 
-  @Column({ name: 'file_name', nullable: true })
+  @Column({ type: 'varchar', name: 'file_name', nullable: true })
   fileName: string | null;
 
   @Column({ name: 'due_date', type: 'timestamptz', nullable: true })
@@ -68,13 +68,13 @@ export class Deliverable {
   @Column({ default: 1 })
   version: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   notes: string | null;
 
-  @Column({ name: 'created_by', nullable: true })
+  @Column({ type: 'varchar', name: 'created_by', nullable: true })
   createdBy: string | null;
 
-  @Column({ name: 'reviewed_by', nullable: true })
+  @Column({ type: 'varchar', name: 'reviewed_by', nullable: true })
   reviewedBy: string | null;
 
   @CreateDateColumn({ name: 'created_at' })

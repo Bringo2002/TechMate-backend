@@ -28,25 +28,25 @@ export class Business {
   @Column()
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   industry: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   description: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   website: string | null;
 
-  @Column({ name: 'logo_url', nullable: true })
+  @Column({ type: 'varchar', name: 'logo_url', nullable: true })
   logoUrl: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   address: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   city: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   country: string | null;
 
   @Column({ name: 'is_verified', default: false })

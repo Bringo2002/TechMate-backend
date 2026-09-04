@@ -48,10 +48,10 @@ export class RevenueTarget {
   @Column({ name: 'target_amount', type: 'numeric', precision: 14, scale: 2, default: 0 })
   targetAmount: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   notes: string | null;
 
-  @Column({ name: 'created_by', nullable: true })
+  @Column({ type: 'varchar', name: 'created_by', nullable: true })
   createdBy: string | null;
 
   @CreateDateColumn({ name: 'created_at' })

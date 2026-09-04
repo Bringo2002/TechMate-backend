@@ -27,23 +27,23 @@ export class DeploymentApproval {
   @Index()
   deploymentId: string;
 
-  @Column({ name: 'requested_by', nullable: true })
+  @Column({ type: 'varchar', name: 'requested_by', nullable: true })
   requestedBy: string | null;
 
-  @Column({ name: 'requested_by_name', nullable: true })
+  @Column({ type: 'varchar', name: 'requested_by_name', nullable: true })
   requestedByName: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   reviewer: string | null;
 
-  @Column({ name: 'reviewer_name', nullable: true })
+  @Column({ type: 'varchar', name: 'reviewer_name', nullable: true })
   reviewerName: string | null;
 
   @Column({ type: 'varchar', default: ApprovalStatus.PENDING })
   @Index()
   status: ApprovalStatus;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   notes: string | null;
 
   @Column({ name: 'requested_at', type: 'timestamptz', default: () => 'now()' })

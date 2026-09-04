@@ -57,17 +57,17 @@ export class Order {
   @Index()
   userId: string;
 
-  @Column({ name: 'project_id', nullable: true })
+  @Column({ type: 'varchar', name: 'project_id', nullable: true })
   @Index()
   projectId: string | null;
 
   @Column()
   title: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   description: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   category: string | null;
 
   @Column({ type: 'varchar', default: OrderType.WEBSITE })
@@ -101,7 +101,7 @@ export class Order {
   @Column({ name: 'completed_at', type: 'timestamptz', nullable: true })
   completedAt: Date | null;
 
-  @Column({ name: 'next_milestone', nullable: true })
+  @Column({ type: 'varchar', name: 'next_milestone', nullable: true })
   nextMilestone: string | null;
 
   @CreateDateColumn({ name: 'created_at' })

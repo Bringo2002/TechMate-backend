@@ -55,7 +55,7 @@ export class SupportTicket {
   @Column()
   subject: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   description: string | null;
 
   @Column({ type: 'varchar', default: TicketCategory.GENERAL })
@@ -68,7 +68,7 @@ export class SupportTicket {
   @Index()
   status: TicketStatus;
 
-  @Column({ name: 'assigned_to', nullable: true })
+  @Column({ type: 'varchar', name: 'assigned_to', nullable: true })
   @Index()
   assignedTo: string | null;
 

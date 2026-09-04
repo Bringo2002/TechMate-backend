@@ -21,7 +21,7 @@ export class DeploymentInsight {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'deployment_id', nullable: true })
+  @Column({ type: 'varchar', name: 'deployment_id', nullable: true })
   @Index()
   deploymentId: string | null;
 
@@ -34,16 +34,16 @@ export class DeploymentInsight {
   @Column()
   title: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   description: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   impact: string | null;
 
   @Column({ default: 50 })
   confidence: number;
 
-  @Column({ name: 'action_label', nullable: true })
+  @Column({ type: 'varchar', name: 'action_label', nullable: true })
   actionLabel: string | null;
 
   @Column({ name: 'is_dismissed', default: false })

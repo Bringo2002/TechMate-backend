@@ -23,7 +23,7 @@ export class DeploymentLog {
   @Index()
   deploymentId: string;
 
-  @Column({ name: 'stage_name', nullable: true })
+  @Column({ type: 'varchar', name: 'stage_name', nullable: true })
   @Index()
   stageName: string | null;
 
@@ -38,7 +38,7 @@ export class DeploymentLog {
   @Index()
   timestamp: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   source: string | null;
 
   @Column('jsonb', { default: () => "'{}'" })

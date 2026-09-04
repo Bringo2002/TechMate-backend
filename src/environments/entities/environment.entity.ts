@@ -31,10 +31,10 @@ export class Environment {
   @Index()
   status: EnvironmentStatus;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   version: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   url: string | null;
 
   @Column({ default: 'us-east-1' })

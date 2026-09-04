@@ -53,7 +53,7 @@ export class ProjectAssignment {
   @Column()
   role: string;
 
-  @Column({ name: 'task_description', nullable: true })
+  @Column({ type: 'varchar', name: 'task_description', nullable: true })
   taskDescription: string | null;
 
   @Column('numeric', { name: 'hours_estimated', nullable: true })
@@ -78,10 +78,10 @@ export class ProjectAssignment {
   @Column({ name: 'completed_at', type: 'timestamptz', nullable: true })
   completedAt: Date | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   notes: string | null;
 
-  @Column({ name: 'blocker_description', nullable: true })
+  @Column({ type: 'varchar', name: 'blocker_description', nullable: true })
   blockerDescription: string | null;
 
   @CreateDateColumn({ name: 'created_at' })
