@@ -129,7 +129,7 @@ export class Deployment {
   @Column({ name: 'completed_at', type: 'timestamptz', nullable: true })
   completedAt: Date | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'integer', nullable: true })
   duration: number | null;
 
   @Column({

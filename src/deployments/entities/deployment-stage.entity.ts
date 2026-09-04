@@ -36,7 +36,7 @@ export class DeploymentStage {
   @Column({ type: 'varchar', default: StageStatus.PENDING })
   status: StageStatus;
 
-  @Column({ nullable: true })
+  @Column({ type: 'integer', nullable: true })
   duration: number | null;
 
   @Column('text', { array: true, nullable: true })
