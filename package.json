@@ -66,6 +66,7 @@
     "@nestjs/testing": "^10.4.15",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.9",
+    "@types/express": "^5.0.6",
     "@types/multer": "^2.0.0",
     "@types/node": "^24.2.1",
     "@types/nodemailer": "^7.0.1",
@@ -97,5 +98,17 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "bcrypt",
+      "@nestjs/core",
+      "@scarf/scarf"
+    ],
+    "ignoredBuiltDependencies": [
+      "@nestjs/core",
+      "@scarf/scarf",
+      "bcrypt"
+    ]
   }
 }

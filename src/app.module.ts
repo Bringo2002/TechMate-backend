@@ -34,21 +34,34 @@ import { AdminMetricsModule } from './admin-metrics/admin-metrics.module';
       envFilePath: '.env',
     }),
 
-    // TypeORM — connects to Postgres using env vars
+    // TypeORM — connects to Postgres using DATABASE_URL (Railway) or individual env vars
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres' as const,
-        host: config.get<string>('DB_HOST', 'localhost'),
-        port: config.get<number>('DB_PORT', 5432),
-        username: config.get<string>('DB_USERNAME', 'postgres'),
-        password: config.get<string>('DB_PASSWORD', ''),
-        database: config.get<string>('DB_NAME', 'techmate'),
-        autoLoadEntities: true,       // auto-registers entities from feature modules
-        synchronize: false,           // NEVER true in production — use migrations
-        logging: config.get<string>('NODE_ENV') !== 'production',
-      }),
+      useFactory: (config: ConfigService) => {
+        const databaseUrl = config.get<string>('DATABASE_URL');
+
+        const connectionOptions = databaseUrl
+          ? {
+              url: databaseUrl,
+              ssl: { rejectUnauthorized: false } as const,
+            }
+          : {
+              host: config.get<string>('DB_HOST', 'localhost'),
+              port: config.get<number>('DB_PORT', 5432),
+              username: config.get<string>('DB_USERNAME', 'postgres'),
+              password: config.get<string>('DB_PASSWORD', ''),
+              database: config.get<string>('DB_NAME', 'techmate'),
+            };
+
+        return {
+          type: 'postgres' as const,
+          ...connectionOptions,
+          autoLoadEntities: true,       // auto-registers entities from feature modules
+          synchronize: config.get<string>('DB_SYNCHRONIZE') === 'true' || config.get<string>('NODE_ENV') !== 'production', // Creates tables if DB_SYNCHRONIZE=true
+          logging: config.get<string>('NODE_ENV') !== 'production',
+        };
+      },
     }),
 
     // Rate limiting — replaces the old express-rate-limit middleware
