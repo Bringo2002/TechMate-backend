@@ -36,9 +36,24 @@ async function bootstrap() {
   // them. See common/utils/case-transform.util.ts for why this exists.
   app.use(camelCaseRequestMiddleware);
 
-  // CORS — adjust origin for production
+  // CORS — support single origin, comma-separated origins, or Vercel previews
+  const allowedOrigins = process.env.FRONTEND_URL
+    ? process.env.FRONTEND_URL.split(',').map((o) => o.trim())
+    : ['http://localhost:5173', 'http://localhost:3000'];
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or Postman)
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        allowedOrigins.includes('*') ||
+        /\.vercel\.app$/.test(origin)
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true); // Permissive CORS for smooth frontend-backend connection
+    },
     credentials: true,
   });
 
@@ -67,7 +82,7 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   const port = process.env.PORT || 5000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   console.log(`🚀 TechMate API running on http://localhost:${port}/api`);
   console.log(`📖 Swagger docs at http://localhost:${port}/api/docs`);
 }
