@@ -58,7 +58,7 @@ import { AdminMetricsModule } from './admin-metrics/admin-metrics.module';
           type: 'postgres' as const,
           ...connectionOptions,
           autoLoadEntities: true,       // auto-registers entities from feature modules
-          synchronize: config.get<string>('DB_SYNCHRONIZE') === 'true' || config.get<string>('NODE_ENV') !== 'production', // Creates tables if DB_SYNCHRONIZE=true
+          synchronize: config.get<string>('DB_SYNCHRONIZE') !== 'false', // Auto-creates all tables unless explicitly set to false
           logging: config.get<string>('NODE_ENV') !== 'production',
         };
       },
