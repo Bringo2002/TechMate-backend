@@ -13,13 +13,18 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     private readonly config: ConfigService,
     private readonly authService: AuthService,
   ) {
+    const isProd = process.env.NODE_ENV === 'production' || !!process.env.RAILWAY_ENVIRONMENT_NAME;
+    const defaultCallback = isProd
+      ? 'https://techmate-backend-production.up.railway.app/api/auth/google/callback'
+      : 'http://localhost:3000/api/auth/google/callback';
+
+    const rawCallback = config.get<string>('GOOGLE_CALLBACK_URL') || defaultCallback;
+    const callbackURL = (isProd && rawCallback.includes('localhost')) ? defaultCallback : rawCallback;
+
     super({
       clientID: config.get<string>('GOOGLE_CLIENT_ID') || 'dummy-google-client-id',
       clientSecret: config.get<string>('GOOGLE_CLIENT_SECRET') || 'dummy-google-client-secret',
-      callbackURL: config.get<string>(
-        'GOOGLE_CALLBACK_URL',
-        'http://localhost:3000/api/auth/google/callback',
-      ),
+      callbackURL,
       scope: ['email', 'profile'],
     });
   }
