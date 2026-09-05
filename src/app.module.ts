@@ -40,19 +40,35 @@ import { AdminMetricsModule } from './admin-metrics/admin-metrics.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const databaseUrl = config.get<string>('DATABASE_URL');
+        const dbSsl = config.get<string>('DB_SSL');
 
-        const connectionOptions = databaseUrl
-          ? {
-              url: databaseUrl,
-              ssl: { rejectUnauthorized: false } as const,
-            }
-          : {
-              host: config.get<string>('DB_HOST', 'localhost'),
-              port: config.get<number>('DB_PORT', 5432),
-              username: config.get<string>('DB_USERNAME', 'postgres'),
-              password: config.get<string>('DB_PASSWORD', ''),
-              database: config.get<string>('DB_NAME', 'techmate'),
-            };
+        let connectionOptions: any;
+        if (databaseUrl) {
+          const isInternal =
+            databaseUrl.includes('railway.internal') ||
+            databaseUrl.includes('localhost') ||
+            databaseUrl.includes('127.0.0.1');
+          const useSsl =
+            dbSsl === 'true'
+              ? { rejectUnauthorized: false }
+              : dbSsl === 'false'
+                ? false
+                : isInternal
+                  ? false
+                  : { rejectUnauthorized: false };
+          connectionOptions = {
+            url: databaseUrl,
+            ssl: useSsl,
+          };
+        } else {
+          connectionOptions = {
+            host: config.get<string>('DB_HOST', 'localhost'),
+            port: config.get<number>('DB_PORT', 5432),
+            username: config.get<string>('DB_USERNAME', 'postgres'),
+            password: config.get<string>('DB_PASSWORD', ''),
+            database: config.get<string>('DB_NAME', 'techmate'),
+          };
+        }
 
         return {
           type: 'postgres' as const,
