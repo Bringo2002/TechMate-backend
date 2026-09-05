@@ -113,10 +113,11 @@ export class AuthController {
     const { accessToken, refreshToken } = req.user;
 
     // Redirect to frontend with tokens in the URL hash (fragment)
-    const frontendUrl = this.config.get<string>(
+    const rawFrontendUrl = this.config.get<string>(
       'FRONTEND_URL',
       'http://localhost:5173',
     );
+    const frontendUrl = rawFrontendUrl.replace(/\/+$/, '');
     res.redirect(
       `${frontendUrl}/auth/callback?accessToken=${accessToken}&refreshToken=${refreshToken}`,
     );
