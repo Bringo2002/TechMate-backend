@@ -81,10 +81,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
 
-  const port = process.env.PORT || 5000;
+  const port = parseInt(process.env.PORT || '5000', 10);
   await app.listen(port, '0.0.0.0');
-  console.log(`🚀 TechMate API running on http://localhost:${port}/api`);
-  console.log(`📖 Swagger docs at http://localhost:${port}/api/docs`);
+  console.log(`🚀 TechMate API running on http://0.0.0.0:${port}/api (PORT env: ${process.env.PORT})`);
+  console.log(`📖 Swagger docs at http://0.0.0.0:${port}/api/docs`);
 }
 
 bootstrap();
